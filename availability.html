@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>DND LFG</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.0/css/all.css" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.runtime.js"></script>
+    <script src="js/availability.js" charset="utf-8" defer></script>
+  </head>
+  <body id="availability-body">
+	<header>
+    <h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
+		<nav class="navbar">
+			<ul class="navlist">
+			  <li class="navitem navlist"><a href="characters">Characters</a></li>
+			  <li class="navitem navlist"><a href="create-campaign">Create Campaign</a></li>
+			  <li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
+			  <li class="navitem navlist"><a href="availability">My Availability</a></li>
+			  <li class="navitem navlist"><a href="account">Account</a></li>
+			  <li class="navitem navlist" id="navlogout"><a href="login.html">Log Out</a></li>
+			</ul>
+		</nav>
+    </header>
+	<div class="availability-parent-encompassing" id="parent-avail-div">
+		<div class="campaigns-signed-up-availability" id="campaigns-signed-up-availability-id">
+			<h2 class="avail-h2-headers">Currently Signed Up For</h2>
+			<table class="campaigns-availability-table" id="campaigns-table-parent">
+				<thead class="avail-head">
+					<tr id="avail-head-tr">
+						<th>Campaign</th>
+						<th>Plays On</th>
+						<th>Looking for</th>
+						<th>Signed Up</th>
+					</tr
+				</thead>
+				<tbody>
+					<tr>
+						<td>Saviors of Ragnarok</td>
+						<td>Sunday</td>
+						<td>8</td>
+						<td>2</td>
+					<tr>
+					<tr>
+						<td>House of Shards</td>
+						<td>Saturday</td>
+						<td>4</td>
+						<td>3</td>
+					<tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="availability" id="availability-div">	
+			<h2 class="avail-h2-headers">Availability</h2>
+			<p>D&D games are played in the evenings, US Pacific time. By updating your availability below, you can view <a href="available-campaigns.html">Available Campaigns</a> that are looking for players on similar days.</p>
+			<p>The table on the left displays campaigns you are currently signed up for that are still looking for players. If you de-select a day below that appears in the table, you will be removed from that campaign.</p>
+			<form id="availability-form">
+				<br>
+				<p>My Availability</p>
+				<input type="checkbox" name="monday" value="monday">Monday</input><br>
+				<input type="checkbox" name="tuesday" value="tuesday">Tuesday</input><br>
+				<input type="checkbox" name="wednesday" value="wednesday">Wednesday</input><br>
+				<input type="checkbox" name="thursday" value="thursday">Thursday</input><br>
+				<input type="checkbox" name="friday" value="friday">Friday</input><br>
+				<input type="checkbox" name="saturday" value="saturday" checked>Saturday</input><br>
+				<input type="checkbox" name="sunday" value="sunday" checked>Sunday</input><br>
+				<br>
+				<input type="submit" value="Submit" id="availability-submit-button">
+			</form>
+			<br><br>
+		</div>
+	</div>
+  </body>
+</html>

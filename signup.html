@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>DND LFG</title>
+	<!-- This 3rd-party stylesheet incorporates SVG icons from Font Awesome: http://fontawesome.com/ -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.0/css/all.css" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="css/style.css">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.runtime.js"></script>
+<!--     this line is for a thing i hope i dont need
+        <script src="character.js" charset="utf-8" defer></script>
+        <script src="index.js" charset="utf-8" defer></script>
+	login
+-->
+        <script src="js/signup.js" charset="utf-8" defer></script>
+  </head>
+  <body id="signup-body">
+	<header>
+		<h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
+		<!-- Below code for header bar. Just "Sign Up" and "Login"
+		centered in header w/ help of css. -->
+		<!-- <nav class="navbar">
+			<nav class="navbar-centered-login">
+				<ul class="navlist">
+				  <li class="navitem navlink"><a href="#">Sign Up</a></li>
+				  <li class="navitem navlink"><a href="#">Login</a></li>
+				</ul>
+			</nav>
+		</nav> -->
+    </header> 
+	<div class="signup-page">
+		<div class="signup-full-form">
+			<div class="signup">
+				<div class="signup-header">
+					<h3>Join the party</h3>
+					<!-- <p>Enter the Dungeon</> text below title -->
+				</div>
+			</div>
+			<form class="signup-form">
+				<input id="signup-username" type="text" placeholder="username"/>
+				<input id="signup-password" type="password" placeholder="password"/>
+				<input id="signup-email" type="email" placeholder="email"/>
+				<input type="radio" id="type1" name="type" value="P">
+				<label for="type1">Player</label><br>
+				<input type="radio" id="type2" name="type" value="D">
+				<label for="type2">DM</label><br>  
+				<button id="signup-button">Sign-up</button>
+				<p class="message">Or <a href="login.html">Log-in</a></p>
+			</form>
+		</div>
+	</div>
+  </body>
+</html>

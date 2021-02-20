@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>DND LFC</title>
+		<!-- This 3rd-party stylesheet incorporates SVG icons from Font Awesome: http://fontawesome.com/ -->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.0/css/all.css" crossorigin="anonymous">
+		<link rel="stylesheet" href="css/style.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.runtime.js"></script>
+		<script src="js/account.js" charset="utf-8" defer></script>
+	</head>
+	<body id="account-body">
+		<header>
+		<h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
+			<nav class="navbar">
+				<ul class="navlist">
+				<li class="navitem navlist"><a href="characters">Characters</a></li>
+				<li class="navitem navlist"><a href="create-campaign">Create Campaign</a></li>
+				<li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
+				<li class="navitem navlist"><a href="availability">My Availability</a></li>
+				<li class="navitem navlist"><a href="account">Account</a></li>
+				<li class="navitem navlist" id="navlogout"><a href="login.html">Log Out</a></li>
+				</ul>
+			</nav>
+		</header>
+		<div class="buffer"></div>
+		<div class="account-container" id="account-container">
+			<div class="header-container">
+				<div class="account-header">
+					<h3>Account</h3>
+				</div>
+			</div>
+			<div class="account-form-container">
+				<form class="account-form" id="account-form">
+					<h4 class="account-form-header">username</h4>
+					<span id="account-username">sneukam</span>
+					<!-- <input id="account-username" type="text" placeholder="" value="sneukam" readonly></input> -->
+					<br><br>
+					<h4 class="account-form-header">name</h4>
+					<span id="account-name">Spencer Neukam</span>
+					<!-- <input id="account-name" type="text" placeholder="" value="Spencer Neukam" readonly></input> -->
+					<br><br>
+					<h4 class="account-form-header">email</h4>
+					<span id="account-email">neukams@oregonstate.edu</span>
+					<!-- <input id="account-email" type="text" placeholder="" value="neukams@oregonstate.edu" readonly></input> -->
+					<br><br>
+					<h4 class="account-form-header">password</h4>
+					<span id="account-password">****</span>
+					<br><br>
+					<h4 class="account-form-header">player type</h4>
+					<span id="account-playertype">Player</span>
+					<!-- <input id="account-playertype" type="text" placeholder="" value="Player" readonly></input> -->
+					<br><br>
+					<h4 class="account-form-header">playstyle</h4>
+					<span id="account-playstyle">casual</span>
+					<!-- <input id="account-playstyle" type="text" placeholder="" value="Casual" readonly></input> -->
+					<br><br>
+					<h4 class="account-form-header">campaign history</h4>
+					<span id="account-campaignhistory">Still relatively new.</span>
+					<!-- <textarea id="account-campaignhistory" type="text" rows="3" cols="29" placeholder="" readonly>Still relatively new</textarea> -->
+					<br><br><br>
+					<button id="account-edit" class="smoll-button">edit</button>
+					<button id="account-save" class="smoll-button" hidden>save</button>
+				</form>
+			</div>
+		</div>
+		<div id="modal-backdrop" class="hidden"></div>
+		<div id="edit-account-modal" class="hidden">
+			<div class="modal-dialog">
+				<div class="modal-header">
+					<h3>Edit Account Info</h3>
+					<!--<button type="button" id="modal-close-button">&times;</button>-->
+				</div>
+				<div class="modal-body">
+					<div class="account-input-element">
+						<label for="account-name">username</label>
+						<p type="text" id="account-username-p"></p>
+					</div>
+					<div class="account-input-element">
+						<label for="account-username">name</label>
+						<input type="text" id="account-name-input" class="account-edit-input"></input>
+					</div>
+					<div class="account-input-element">
+						<label for="account-password">email</label>
+						<input type="text" id="account-email-input" class="account-edit-input">
+					</div>
+					<div class="account-input-element">
+						<label for="account-password">new password</label>
+						<input type="text" id="account-password-input" class="account-edit-input" placeholder="Leave blank to keep current pw">
+					</div>
+					<div class="account-input-element">
+						<label for="account-playertype-input">player type</label>
+						<p type="text" id="account-playertype-p"></p>
+					</div>
+					<div class="account-input-element">
+						<label for="account-playstyle-input">playstyle</label>
+						<input type="text" id="account-playstyle-input" class="account-edit-input">
+					</div>
+					<div class="account-input-element">
+						<label for="account-campaignhistory-input">campaign history</label>
+						<textarea type="text" id="account-campaignhistory-input" class="account-edit-input"></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="modal-cancel-button">Cancel</button>
+					<button type="button" class="modal-accept-button">Submit</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>DND LFC</title>
+	<!-- This 3rd-party stylesheet incorporates SVG icons from Font Awesome: http://fontawesome.com/ -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.0/css/all.css" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.runtime.js"></script>
+<!--     this line is for a thing i hope i dont need
+        <script src="character.js" charset="utf-8" defer></script>
+        <script src="index.js" charset="utf-8" defer></script>
+-->
+    <script src="js/create-campaign.js" charset="utf-8" defer></script>
+  </head>
+  <body id="create-campaign-body">
+	<header>
+    <h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
+		<nav class="navbar">
+			<ul class="navlist">
+			  <li class="navitem navlist"><a href="characters">Characters</a></li>
+			  <li class="navitem navlist"><a href="create-campaign">Create Campaign</a></li>
+			  <li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
+			  <li class="navitem navlist"><a href="availability">My Availability</a></li>
+			  <li class="navitem navlist"><a href="account">Account</a></li>
+			  <li class="navitem navlist" id="navlogout"><a href="login.html">Log Out</a></li>
+			</ul>
+		</nav>
+    </header>
+	<div class="page">
+		<div class="current_campaigns campaign_data">
+			<h2 class="campaign-title">Created Campaigns</h2>
+			<ul class="campaign">
+				<li class="campaign-id" hidden>5862</li>
+				<li class="campaign-name">Ragnarok</li>
+				<li class="campaign-players">Players wanted: 7</li>
+				<li class="campaign-desired-history">Looking for experienced players</li>
+				<li class="campaign-playstyle">UA is ok, homebrew must be confirmed by me</li>
+				<li class="campaign-status">Open</li>
+				<li class=curr_players">
+					<p>Current signed up players:<br>
+					Spencer wizard nuke@google.com<br>
+					Ethan ranger hunteret@some.com<br>
+					John sorcerer fake@notreal.com</p>
+				</li>
+				<button type="button" class="close-button">Close</button>
+			</ul>
+			<ul class="campaign">
+				<li class="campaign-id" hidden>6829</li>
+				<li class="campaign-name">Superhero</li>
+				<li class="campaign-players">Players wanted: 6</li>
+				<li class="campaign-desired-history">Any superhero fans</li>
+				<li class="campaign-playstyle">I will be designing all classes myself</li>
+				<li class="campaign-status">Closed</li>
+				<button type="button" class="close-button" hidden>Close</button>
+			</ul>
+			<ul class="campaign">
+				<li class="campaign-id" hidden>75</li>
+				<li class="campaign-name">Dragons of the Deep</li>
+				<li class="campaign-players">Players wanted: 7</li>
+				<li class="campaign-desired-history">Experienced</li>
+				<li class="campaign-playstyle">Aggressive, rapid progress desired</li>
+				<li class="campaign-status">Open</li>
+				<button type="button" class="close-button">Close</button>
+			</ul>
+	<!--
+			{{#each characters}}
+				   {{> character}}
+				   {{/each}}
+	--> 
+		</div>
+	</div>
+	<p class="disclaimer">*When all player slots are filled the campaigns status will automatically become closed, and it will no longer show up on the avvailable campaigns page. It will be up to you to email/contact your players at that point. If you want to remove a Campaign, you may also set the status to Closed.<p>
+	<button type="button" id="create-campaign-button"><i class="fas fa-drafting-compass"></i></button>
+
+	<div id="modal-backdrop" class="hidden"></div>
+    <div id="create-campaign-modal" class="hidden">
+      <div class="modal-dialog">
+
+        <div class="modal-header">
+          <h3>Create a Campaign</h3>
+          <button type="button" class="modal-close-button">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="campaign-input-element">
+            <label for="campaign-name-input">Campaign Name</label>
+            <input type="text" id="campaign-name-input">
+          </div>
+          <div class="campaign-input-element">
+            <label for="campaign-players-input">Number of players wanted</label>
+            <input type="text" id="character-players-input">
+          </div>
+          <div class="campaign-input-element">
+	    <label for="campaign-desired-history">Select player preference</label>
+		
+ 	    <select name="campaign-desired-history" id="campaign-desired-history">
+  	    <option value=1>All players welcome</option>
+  	    <option value=2>New players preffered</option>
+  	    <option value=3>Some experience</option>
+  	    <option value=4>Experienced players only</option>
+	    </select>
+	</div>
+          <div class="campaign-input-element">
+	    <label for="campaign-playstyle">Select Homebrew/UA preference</label>
+		
+ 	    <select name="campaign-playstyle" id="campaign-playstyle">
+  	    <option value=1>By the Book</option>
+  	    <option value=2>UA allowed</option>
+  	    <option value=3>UA and Homebrew</option>
+  	    <option value=4>Contact DM</option>
+	    </select>
+	</div>
+          <div class="campaign-input-element">
+	    <label for="campaign-day">Select day to play</label>
+		
+ 	    <select name="campaign-day" id="campaign-day">
+  	    <option value=1>Monday</option>
+  	    <option value=2>Tuesday</option>
+  	    <option value=3>Wednesday</option>
+  	    <option value=4>Thursday</option>
+  	    <option value=5>Friday</option>
+  	    <option value=6>Saturday</option>
+  	    <option value=7>Sunday</option>
+	    </select>
+	</div>
+	  
+
+        <div class="modal-footer">
+          <button type="button" class="modal-cancel-button">Cancel</button>
+          <button type="button" class="modal-accept-button">Create Campaign</button>
+        </div>
+
+      </div>
+    </div>
+</body>

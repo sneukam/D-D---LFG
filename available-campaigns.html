@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>DND LFC</title>
+	<!-- This 3rd-party stylesheet incorporates SVG icons from Font Awesome: http://fontawesome.com/ -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.0/css/all.css" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.runtime.js"></script>
+    <script src="js/available-campaigns.js" charset="utf-8" defer></script>
+  </head>
+  <body id="available-campaigns-body">
+	<header>
+		<h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
+		<nav class="navbar">
+			<ul class="navlist">
+			  <li class="navitem navlist"><a href="characters">Characters</a></li>
+			  <li class="navitem navlist"><a href="create-campaign">Create Campaign</a></li>
+			  <li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
+			  <li class="navitem navlist"><a href="availability">My Availability</a></li>
+			  <li class="navitem navlist"><a href="account">Account</a></li>
+			  <li class="navitem navlist" id="navlogout"><a href="login.html">Log Out</a></li>
+			</ul>
+		</nav>
+    </header>
+	<div class="available-campaigns-heading">
+		<br>
+		<h1 class="available-header">Campaigns that fit your schedule</h1>
+	</div>
+	<div class="available-campaigns-table-container" id="available-campaigns-table-container">
+		<table class="available-campaigns-table">
+			<thead class="available-campaigns-table-header">
+				<tr id="available-campaigns-table-header-row">
+					<td hidden>id</td>
+					<td>Name</td>
+					<td>Playstyle</td>
+					<td class="no-wrap">Desired History</td>
+					<td>Created</td>
+					<td>Plays On</td>
+					<td class="no-wrap">Looking for</td>
+					<td class="no-wrap">Signed up</td>
+					<td></td>
+					<td hidden></td> <!-- this row holds a 'Y' value if the person is signed up for the campaign -->
+				</tr>
+			<tbody class="available-campaigns-table-body">
+				<tr>
+					<td hidden>5802</td>
+					<td>Saviors of Ragnarok</td>
+					<td>Aggressive</td>
+					<td>Experienced players only</td>
+					<td>2/10/2021</td>
+					<td>Sunday</td>
+					<td>8</td>
+					<td>2</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="leave-campaign-button">Leave</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden>Y</td>
+				</tr>
+				<tr>
+					<td hidden>1945</td>
+					<td>Superhero High</td>
+					<td>Methodical</td>
+					<td>Some Experience</td>
+					<td>2/5/2021</td>
+					<td>Friday</td>
+					<td>8</td>
+					<td>2</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>8295</td>
+					<td>House of Shards</td>
+					<td>Laid back / slow</td>
+					<td>New players preferred</td>
+					<td>1/3/2021</td>
+					<td>Saturday</td>
+					<td>4</td>
+					<td>3</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="leave-campaign-button">Leave</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden>Y</td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+				<tr>
+					<td hidden>5802</td>
+					<td>Game of Gnomes</td>
+					<td>Just for fun</td>
+					<td>All players welcome</td>
+					<td>10/6/2020</td>
+					<td>Monday</td>
+					<td>6</td>
+					<td>1</td>
+					<td class="join-campaign-cell">
+						<span class="campaign-action-cells">
+							<button class="join-campaign-button">Join</button>
+						</span></td>
+					<td class="joined-this-campaign" hidden></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</div>
+	<!--<button type="button" id="join-campaign-button"><i class="fas fa-scroll"></i></i></button>
+	<button type="button" id="leave-campaign-button"><i class="fas fa-sign-out-alt"></i></i></button>-->
+	<div id="modal-backdrop" class="hidden"></div>
+    <div id="join-campaign-modal" class="hidden">
+      <div class="modal-dialog">
+
+        <div class="modal-header">
+          <h3>Join a campaign</h3>
+          <button type="button" class="modal-close-button">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="join-campaign-element">
+            <label for="join-campaign-name-input">Enter name of campaign you would like to join</label>
+            <textarea id="join-campaign-name-input"></textarea>
+          </div>
+          <div class="join-campaign-element">
+	    <label for="selected-character">Choose a character:</label>
+	    <select name="selected-character">
+		<option value=1>Terra</option>
+		<option value=2>Alice</option>
+		<option value=3>Draug</option>
+	    </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="modal-cancel-button">Cancel</button>
+          <button type="button" class="modal-accept-button">Submit</button>
+        </div>
+    </div>
+  </div>
+
+    <div id="leave-modal-backdrop" class="hidden"></div>
+    <div id="leave-campaign-modal" class="hidden">
+      <div class="modal-dialog">
+
+        <div class="modal-header">
+          <h3>Leave a campaign</h3>
+          <button type="button" class="modal-close-button">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="leave-campaign-element">
+            <label for="leave-campaign-name-input">Enter name of campaign you would like to leave</label>
+            <textarea id="leave-campaign-name-input"></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="modal-cancel-button">Cancel</button>
+          <button type="button" class="modal-accept-button">Submit</button>
+        </div>
+    </div>
+   </div>
+</body>
