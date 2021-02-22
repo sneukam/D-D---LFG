@@ -1,10 +1,10 @@
 /*******************************
+
 	Login Page
+	
 ********************************/
 
-window.addEventListener('DOMContentLoaded', login_listener);
-
-function login_listener() {
+window.addEventListener('DOMContentLoaded', function() {
 	
 	// Check if we already have an active session
 	// ... this actually might be done on the server side. Backend server receives request for <page>, check sessions, if true, serve up the Campaigns Page. If not, Login page.
