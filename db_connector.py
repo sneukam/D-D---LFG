@@ -2,10 +2,8 @@ import MySQLdb
 import os
 from dotenv import load_dotenv, find_dotenv
 
-# Load our environment variables from the .env file in the root of our project.
+# Load our environment variables from the .env file from the project root, and capture them.
 load_dotenv(find_dotenv())
-
-# Set the variables in our application with those environment variables
 host = os.environ.get("340DBHOST")
 user = os.environ.get("340DBUSER")
 passwd = os.environ.get("340DBPW")
@@ -47,13 +45,17 @@ def execute_query(db_connection = None, query = None, query_params = ()):
     '''
     #TODO: Sanitize the query before executing it!!!
     cursor.execute(query, query_params)
-    # this will actually commit any changes to the database. without this no
-    # changes will be committed!
+    # this will actually commit any changes to the database. Without this no changes will be committed!
     db_connection.commit();
     return cursor
 
 if __name__ == '__main__':
     print("Executing a sample query on the database using the credentials from db_credentials.py")
+    print(f"\thost = {host}")
+    print(f"\tuser = {user}")
+    print(f"\tpasswd = {passwd}")
+    print(f"\tdb = {db}")
+    print()
     db = connect_to_database()
     query = "SELECT * from bsg_people;"
     results = execute_query(db, query);
