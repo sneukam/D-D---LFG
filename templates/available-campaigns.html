@@ -4,9 +4,10 @@
 	<title>DND LFC</title>
 	<!-- This 3rd-party stylesheet incorporates SVG icons from Font Awesome: http://fontawesome.com/ -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.0/css/all.css" crossorigin="anonymous">
-	<link rel="stylesheet" href="../css/style.css">
+	<link rel="stylesheet" href="../static/css/core-navbar.css">
+	<link rel="stylesheet" href="../static/css/available-campaigns.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.runtime.js"></script>
-    <script src="../js/available-campaigns.js" charset="utf-8" defer></script>
+    <script src="../static/js/available-campaigns.js" charset="utf-8" defer></script>
   </head>
   <body id="available-campaigns-body">
 	<header>
@@ -406,58 +407,4 @@
 		</table>
 	</div>
 	</div>
-	<!--<button type="button" id="join-campaign-button"><i class="fas fa-scroll"></i></i></button>
-	<button type="button" id="leave-campaign-button"><i class="fas fa-sign-out-alt"></i></i></button>-->
-	<div id="modal-backdrop" class="hidden"></div>
-    <div id="join-campaign-modal" class="hidden">
-      <div class="modal-dialog">
-
-        <div class="modal-header">
-          <h3>Join a campaign</h3>
-          <button type="button" class="modal-close-button">&times;</button>
-        </div>
-
-        <div class="modal-body">
-          <div class="join-campaign-element">
-            <label for="join-campaign-name-input">Enter name of campaign you would like to join</label>
-            <textarea id="join-campaign-name-input"></textarea>
-          </div>
-          <div class="join-campaign-element">
-	    <label for="selected-character">Choose a character:</label>
-	    <select name="selected-character">
-		<option value=1>Terra</option>
-		<option value=2>Alice</option>
-		<option value=3>Draug</option>
-	    </select>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="modal-cancel-button">Cancel</button>
-          <button type="button" class="modal-accept-button">Submit</button>
-        </div>
-    </div>
-  </div>
-
-    <div id="leave-modal-backdrop" class="hidden"></div>
-    <div id="leave-campaign-modal" class="hidden">
-      <div class="modal-dialog">
-
-        <div class="modal-header">
-          <h3>Leave a campaign</h3>
-          <button type="button" class="modal-close-button">&times;</button>
-        </div>
-
-        <div class="modal-body">
-          <div class="leave-campaign-element">
-            <label for="leave-campaign-name-input">Enter name of campaign you would like to leave</label>
-            <textarea id="leave-campaign-name-input"></textarea>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="modal-cancel-button">Cancel</button>
-          <button type="button" class="modal-accept-button">Submit</button>
-        </div>
-    </div>
-   </div>
 </body>

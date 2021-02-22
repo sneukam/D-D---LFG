@@ -1,0 +1,40 @@
+/***********************************************
+
+	404 PAGE NOT FOUND
+	
+***********************************************/
+
+#page-not-found-body {
+  background-color: #8e7256;  /* this will override the standard body class at the top. */
+  margin: 0;
+  font-family: "Roboto", sans-serif, "Vecna";
+  background-image: url("../img/re-roll.jpg");
+  background-position: relative;
+  background-position: 0% -10%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  
+  /*max-width: auto;*/
+  /*overflow: auto; <-- does not work. */
+  
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page-not-found-div {
+	font-family: "Vecna";
+	font-size: 30px;
+	position: relative;
+	left: 58%;
+	top: 20px;
+	color: #f7be4a;
+}
+
+.page-not-found-div a {
+	color: #f7be4a;
+}
+
+.page-not-found-div a:hover {
+	color: #319df6;
+}

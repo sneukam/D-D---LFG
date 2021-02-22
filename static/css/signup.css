@@ -1,0 +1,106 @@
+/***********************************************
+
+	Signup page
+
+***********************************************/
+
+#signup-body {
+  background-color: #e04242;  /* this will override the standard body class at the top. */
+  margin: 0;
+  font-family: "Roboto", sans-serif, "Vecna";
+  background-image: url("../img/signup.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  /*max-width: auto;*/
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.navbar-centered-signup {
+  position: relative;
+  float: none;
+  /*position: absolute;*/
+  /*top: 50%;*/
+  left: 43%;
+  /*transform: translate(-50%, -50%);*/
+}
+
+.signup-page {
+  width: 340px;
+  padding: 4% 0 0;
+  margin: auto;
+  position: relative;
+  /*left: -160px;*/
+  opacity: .85;
+  /*background-color: black;*/
+}
+
+.signup-page .signup-full-form .signup {
+  font-family: "Vecna";
+  /*margin-top: -36px;*/
+  margin-top: -25%;
+  /*margin-bottom: 26px;*/
+  margin-bottom: -10%;
+  
+}
+
+.signup-header {
+  font-family: "VecnaBold";
+  opacity: 1; /* opacity of the ENTER THE DUNGEON text */
+  font-size: 45px;    /* ENTER THE DUNGEON font size */
+}
+
+.signup-full-form {
+  position: relative;
+  /*position-left:40px;*/
+  z-index: 1;
+  /*background: #FFFFFF;*/
+  /*background: ;*/
+  max-width: 360px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  text-align: center;
+  color:white;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.signup-full-form input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.signup-full-form button {
+  /*font-family: "Roboto", sans-serif;*/
+  font-family: Vecna;
+  text-transform: uppercase;
+  outline: 0;
+  background-color: #328f8a;
+  background-image: linear-gradient(45deg,#252333,#3e495f);
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #cfe4eb; /*#FFFFFF;*/
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+
+.signup-full-form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+
+.signup-full-form .message a {
+  color: #cfe4eb;
+  text-decoration: none;
+}

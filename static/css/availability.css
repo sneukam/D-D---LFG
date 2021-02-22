@@ -1,0 +1,102 @@
+/***********************************************
+
+	Availability page
+	
+***********************************************/
+
+#availability-body {
+  background-color: #FFFFFF;  /* this will override the standard body class at the top. */
+  margin: 0;
+  font-family: "Roboto", sans-serif, "Vecna";
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#parent-avail-div {
+	position: relative;
+	margin: auto;
+	margin-top: 4%;
+	width: 100%;
+}
+
+#campaigns-table-parent {
+	border-radius: 25px;
+}
+
+#avail-h2-headers {
+	/* */
+}
+
+.campaigns-signed-up-availability {
+	position: relative;
+	width: 400px;
+	table-layout: fixed;
+	white-space: nowrap;
+	margin: auto;
+	/*margin-top: 1%;*/
+	float: left;
+	margin-left: 7%;
+}
+
+.campaigns-availability-table, thead, tr, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+	width: 100%;
+	text-align: left;
+	padding: 7px;
+}
+
+.avail-head {
+	background-color: #5F60F1;
+	/*background-color: #B80000; this is the nav bar red color - doesn't work well because eyes focus on the different fonts */
+	color: #fff;
+	/*border-radius: 25px; doesn't work here*/
+}
+
+#avail-head-tr {
+	/*border-radius: 25px; doesn't work here either */
+}
+
+.availability {
+	position: relative;
+	width: 500px;
+	margin: auto;
+	float: right;
+	margin-right: 20%;
+	border-left: 2px solid black;
+	padding-left: 45px;
+	/*margin-top: 4%;*/
+}
+
+.availability a {
+	color: #E73D1F;
+}
+
+.availability-form {
+	font-family: sans-serif;
+}
+
+#availability-submit-button {
+	background: #E73D1F;
+	color: #fff;
+	border: 1px solid #eee;
+	border-radius: 20px;
+	box-shadow: 5px 5px 5px #eee;
+	text-shadow:none;
+	height: 22px;
+	width: 70px;
+}
+
+/* Button "pressed effect:
+https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_buttons_animate3
+*/
+
+#availability-submit-button:hover {
+	background: #016ABC;
+	color: #fff;
+	border: 1px solid #eee;
+	border-radius: 20px;
+	box-shadow: 5px 5px 5px #eee;
+	text-shadow:none;
+}
