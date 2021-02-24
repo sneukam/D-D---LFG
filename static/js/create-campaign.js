@@ -34,21 +34,21 @@ function handleModalAcceptClick() {
   }
 }
 
-
 /*
  *   this function shows the modal to create a character when the "create character"
  *   * button is clicked.
  *    */
 function showCreateCampaignModal() {
+	
+	console.log("we entered the showCreateCampaignModal() function");
 
-  var modalBackdrop = document.getElementById('modal-backdrop');
-  var createCampaignModal = document.getElementById('create-campaign-modal');
+	var modalBackdrop = document.getElementById('modal-backdrop');
+	var createCampaignModal = document.getElementById('create-campaign-modal');
 
-  // Show the modal and its backdrop.
-  modalBackdrop.classList.remove('hidden');
-  createCampaignModal.classList.remove('hidden');
+	// Show the modal and its backdrop.
+	modalBackdrop.classList.remove('hidden');	
+	createCampaignModal.classList.remove('hidden');
 }
-
 
 /*
  *  * This function clears any value present in any of the character input elements.
@@ -62,6 +62,7 @@ function clearCampaignInputValues() {
   }
 
 }
+
 /*
  *  * This function hides the modal to create a character and clears any existing
  *   * values from the input fields whenever any of the modal close actions are
@@ -79,16 +80,23 @@ function hideCreateCampaignModal() {
   clearCampaignInputValues();
 
 }
+
 /*   twit
  *  * Wait until the DOM content is loaded, and then hook up UI interactions, etc.
  *   */
 window.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('create-campaign-button').addEventListener('click', showCreateCampaignModal);
+    
+	console.log(document.getElementById('create-campaign-button'));
+	document.getElementById('create-campaign-button').addEventListener('click', showCreateCampaignModal);
+	
+	/*
     document.querySelector('#create-campaign-modal .modal-close-button').addEventListener('click', hideCreateCampaignModal);
     document.querySelector('#create-campaign-modal .modal-cancel-button').addEventListener('click', hideCreateCampaignModal);
 	document.querySelector('#create-campaign-modal .modal-accept-button').addEventListener('click', handleModalAcceptClick);
+	*/
 	
 	// 'Close Campaign' - Click Event Listerns
+	/*
 	var closeCampaignButtons = document.getElementsByClassName('close-button');
 	console.log(closeCampaignButtons);
 	for (let i=0; i<closeCampaignButtons.length; i++) {
@@ -97,6 +105,6 @@ window.addEventListener('DOMContentLoaded', function () {
 			var id = buttonvar.parentElement.getElementsByClassName("campaign-id")[0].innerHTML;
 			alert("Setting campaign id " + id + " to closed in the database via POST request.");
 		});
-	}
+	} */
 	
 });
