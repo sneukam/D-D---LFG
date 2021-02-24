@@ -1,31 +1,58 @@
-from flask import Flask, render_template, json
+from flask import Flask, session, render_template, json, redirect, abort
 import os
 # import database.db_connector as db    # not sure why 'database' is there.
 import db_connector as db
 
+# Clear Gunicorn log file
+# this will erase any startup log lines that gunicorn has already writtne.
+# if guinicorn is starting up successfully, ^ this is a non issue.
+# if the webpage(s) are non-response, and the log file is empty, you may want to remove this line.
+open('logs/gunicorn.log', 'w').close()
+
 # Flask
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0     # tells the browser to pull a refresh from the server if 0 seconds have passed.
+app.secret_key = os.environ.get("FLASKSECRETKEY")
+
+# Flask-Session
+# SESSION_TYPE = 'null'
+SESSION_PERMANENT = True        # keeping the default value
+SESSION_USE_SIGNER = True       # keeping the default value
+PERMANENT_SESSION_LIFETIME = (86400 * 1)  # 86400 = num seconds in 24 hours
+SESSION_COOKIE_DOMAIN = 'flip3.engr.oregonstate.edu:6735'
+SESSION_COOKIE_SECURE = False  # flip3 servers use http, confirming we will be sending cookies via unsecured http protocol.
+
+"""
+app.config.from_object(__name__)
+Session(app)
+^^^ got this from an example that had other outdated code in it.
+"""
 
 # Database Connection
 db_connection = db.connect_to_database()
 
 # Routes
-@app.route('/')
+@app.route('/', methods = ['GET'])
 def root():
+    return redirect(location='/login', code=302)
+
+@app.route('/login', methods = ['GET'])
+def login():
+    #TODO: If user is already logged in...
     return render_template("login.html")
 
-@app.route('/login')
-def login():
+@app.route('/login', methods = ['POST'])
+def authenticate():
     #TODO: Test credentials, create session
-    return render_template("login.html")
+    print("/login POST request received")
+    return "received the POST request on the login page"
 
 @app.route('/sign-up')
 def signup():
     return render_template("signup.html")
 
 @app.route('/characters')
-def signup():
+def characters():
     return render_template("characters.html")
 
 @app.route('/create-campaign')
@@ -48,6 +75,7 @@ def account():
 def logout():
     # TODO: erase their session
     return render_template("login.html")
+
 
 # TODO: CREATE + READ Operations
 
