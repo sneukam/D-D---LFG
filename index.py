@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, json, redirect, abort
+from flask import Flask, session, render_template, json, redirect, abort, request
 import os
 # import database.db_connector as db    # not sure why 'database' is there.
 import db_connector as db
@@ -29,7 +29,7 @@ Session(app)
 """
 
 # Database Connection
-db_connection = db.connect_to_database()
+initial_db_connection = db.connect_to_database()
 
 # Routes
 @app.route('/', methods = ['GET'])
@@ -43,13 +43,79 @@ def login():
 
 @app.route('/login', methods = ['POST'])
 def authenticate():
-    #TODO: Test credentials, create session
-    print("/login POST request received")
+    # TODO:
+    # Test credentials, create session
+
+
+    # print("/login POST request received")
     return "received the POST request on the login page"
 
 @app.route('/sign-up')
 def signup():
+    # TODO:
+    # if the user is already logged-in, redirect to available_campaigns page
+
+    #username = request.args['username']
+    #email = request.args['email']
+
+    # query db and see if these values exist
+
     return render_template("signup.html")
+
+@app.route('/sign-up/creds', methods = ['GET'])
+def credential_check():
+    # TODO:
+    # if the user is already logged-in, redirect to available_campaigns page
+
+    username = request.args['username']
+    email = request.args['email']
+
+    db_connection = db.connect_to_database()
+    username_query = f"SELECT * FROM users WHERE username = '{username}'"
+    username_result = db.execute_query(db_connection, username_query)
+    email_query = f"SELECT * FROM users WHERE email = '{email}'"
+    email_result = db.execute_query(db_connection, email_query)
+
+    # return logic based on if the email/username are or are not unique
+    if email_result.rowcount == 0 and username_result.rowcount == 0:
+        #print("username and password are unique")
+        return "1"  # tells the JS GET handler that these are available for use
+    elif email_result.rowcount == 0:
+        #print("only email is unique")
+        return "username"
+    elif username_result.rowcount == 0:
+        #print("only username is unique")
+        return "email"
+    else:
+        #print("both username and email are not unique (duplicate values already exist for both)")
+        #print("test username_result is None")
+        return "username and email"
+
+    # this statement should never be hit, had it here for testing purposes, keeping it around for now.
+    return "1"
+
+@app.route('/sign-up', methods = ['POST'])
+def new_user():
+    # TODO:
+    # credential check:
+    #   - username unique
+    #   - email unique
+    #   - username longer than 3 characters
+    # if invalid, return error for user to see
+
+    # Credentials valid:
+    #   - create new user
+    #   - send success response and redirect to my availability
+
+    credentials = request.get_json()
+    print(f"testing to see if json access works: email: {credentials['email']}")
+
+
+    username = request.form['username']
+    pwd = request.form['pwd']
+    email = request.form['email']
+
+    return f"username: {username}, pwd: {pwd}, email: {email}" # change this after
 
 @app.route('/characters')
 def characters():
