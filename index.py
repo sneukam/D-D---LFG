@@ -3,127 +3,69 @@ import os
 # import database.db_connector as db    # not sure why 'database' is there.
 import db_connector as db
 
-# Clear log file (note: Gunicorn startup messages/errors are cleared)
+# Clear Gunicorn log file
+# this will erase any startup log lines that gunicorn has already writtne.
+# if guinicorn is starting up successfully, ^ this is a non issue.
+# if the webpage(s) are non-response, and the log file is empty, you may want to remove this line.
 open('logs/gunicorn.log', 'w').close()
 
 # Flask
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0     # tells the browser to pull a refresh from the server if 0 seconds have passed.
+app.secret_key = os.environ.get("FLASKSECRETKEY")
 
 # Flask-Session
-app.secret_key = os.environ.get("FLASKSECRETKEY")
-app.session_type = 'filesystem'
-app.session_permanent = True        # keeping the default value
-app.session_user_signer = True      # keeping the default value
-app.permanent_session_lifetime = (86400 * 1)  # 86400 = num seconds in 24 hours
-app.session_cookie_domain = 'flip3.engr.oregonstate.edu:6735'
-app.session_cookie_secure = False
+# SESSION_TYPE = 'null'
+SESSION_PERMANENT = True        # keeping the default value
+SESSION_USE_SIGNER = True       # keeping the default value
+PERMANENT_SESSION_LIFETIME = (86400 * 1)  # 86400 = num seconds in 24 hours
+SESSION_COOKIE_DOMAIN = 'flip3.engr.oregonstate.edu:6735'
+SESSION_COOKIE_SECURE = False  # flip3 servers use http, confirming we will be sending cookies via unsecured http protocol.
 
-# Supporting Functions
-def hash_pw(pwd):
-    # return the hashed password
-    # https://en.wikipedia.org/wiki/Secure_Hash_Algorithms
-    return pwd
+"""
+app.config.from_object(__name__)
+Session(app)
+^^^ got this from an example that had other outdated code in it.
+"""
 
-def logged_in():
-    # returns True if the user is logged in, false otherwise
-    #   logged in =
-    #       1. Client has a Session cookie (user_id, username, email, player_type)
-    #       2. Their session_cookie user_id is in the database
-
-    try:
-        db_connection = db.connect_to_database()
-        user_id = session['user_id']
-        username = session['username']
-        query = f"SELECT user_id FROM users WHERE user_id = {user_id} AND username = '{username}';"
-        result = db.execute_query(db_connection, query)
-        result.fetchall()[0]['user_id'] # if user id does not exist, move to exception clause
-    except:
-        print("User is not logged in")
-        logout_user()
-        return False
-
-    try:
-        if session['user_id'] and session['username'] and session['email'] and session['player_type']:
-            return True
-    except:
-        return False
-    return False
-
-def get_player_homepage():
-    # returns the URL for the standard homepage for the given player_type
-    try:
-        if session['player_type'] == 'Player':
-            return "/available-campaigns"
-        elif session['player_type'] == 'DM':
-            return "/create-campaign"
-    except:
-        pass
-    return False
-
-def logout_user():
-    # logs out the user via clearing their session variables. Returns True
-    try:
-        user_id = session.pop('user_id', None)
-        username = session.pop('username', None)
-        session.pop('email', None)
-        session.pop('player_type', None)
-        print(f"User --> id:{user_id}, username:{username}, has been logged out")
-        return True
-    except:
-        pass
-    return True
+# Database Connection
+initial_db_connection = db.connect_to_database()
 
 # Routes
-@app.route('/',)
+@app.route('/', methods = ['GET'])
 def root():
     return redirect(location='/login', code=302)
 
-@app.route('/login')
+@app.route('/login', methods = ['GET'])
 def login():
-    if logged_in():
-        return redirect(location=get_player_homepage(), code=302)
+    #TODO: If user is already logged in...
     return render_template("login.html")
 
 @app.route('/login', methods = ['POST'])
 def authenticate():
-    # Tests username and password, and logs the user in if they are valid
+    # TODO:
+    # Test credentials, create session
 
-    # capture credentials
-    credentials = request.get_json()
-    username = credentials['username']
-    pwd = credentials['pwd']
 
-    # TODO: Cleanse the query params.
-
-    # test credentials
-    db_connection = db.connect_to_database()
-    query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{pwd}'"
-    result = db.execute_query(db_connection, query)
-
-    # create session
-    try:
-        result = result.fetchall()
-        session['user_id'] = result[0]['user_id']
-        session['username'] = result[0]['username']
-        session['email'] = result[0]['email']
-        session['player_type'] = result[0]['player_type']
-    except:
-        return "0"
-
-    return redirect(location='/login', code=302)
+    # print("/login POST request received")
+    return "received the POST request on the login page"
 
 @app.route('/sign-up')
 def signup():
-    if logged_in():
-        return redirect(location=get_player_homepage(), code=302)
+    # TODO:
+    # if the user is already logged-in, redirect to available_campaigns page
+
+    #username = request.args['username']
+    #email = request.args['email']
+
+    # query db and see if these values exist
+
     return render_template("signup.html")
 
 @app.route('/sign-up/creds', methods = ['GET'])
 def credential_check():
-    """
-    Returns values denoting if the username and/or email arguments are already in-use
-    """
+    # TODO:
+    # if the user is already logged-in, redirect to available_campaigns page
 
     username = request.args['username']
     email = request.args['email']
@@ -136,10 +78,13 @@ def credential_check():
 
     # return logic based on if the email/username are or are not unique
     if email_result.rowcount == 0 and username_result.rowcount == 0:
+        #print("username and password are unique")
         return "1"  # tells the JS GET handler that these are available for use
     elif email_result.rowcount == 0:
+        #print("only email is unique")
         return "username"
     elif username_result.rowcount == 0:
+        #print("only username is unique")
         return "email"
     else:
         #print("both username and email are not unique (duplicate values already exist for both)")
@@ -151,83 +96,51 @@ def credential_check():
 
 @app.route('/sign-up', methods = ['POST'])
 def new_user():
-    # Creates a new user with the provided username, pwd, and email
-    # Assumes credentials have been checked via the /sign-up/creds route handler.
+    # TODO:
+    # credential check:
+    #   - username unique
+    #   - email unique
+    #   - username longer than 3 characters
+    # if invalid, return error for user to see
 
-    print("POST request to create user received")
+    # Credentials valid:
+    #   - create new user
+    #   - send success response and redirect to my availability
 
-    # capture user credentials
     credentials = request.get_json()
-    username = credentials['username']
-    pwd = credentials['pwd']
-    email = credentials['email']
-    player_type = credentials['player_type']
+    print(f"testing to see if json access works: email: {credentials['email']}")
 
-    # TODO: Cleanse the query params.
 
-    # create a new user
-    db_connection = db.connect_to_database()
-    query = f"INSERT INTO users(username, password, email, player_type) " \
-            f"VALUES('{username}', '{pwd}', '{email}', '{player_type}');"
-    result = db.execute_query(db_connection, query)
+    username = request.form['username']
+    pwd = request.form['pwd']
+    email = request.form['email']
 
-    # get the newly created user's id
-    query = f"SELECT user_id FROM users WHERE username = '{username}' AND email = '{email}'"
-    result = db.execute_query(db_connection, query)
-    user_id = result.fetchall()[0]['user_id']
-
-    # set the user's session cookie
-    session['user_id'] = user_id
-    session['username'] = username
-    session['email'] = email
-    session['player_type'] = player_type
-
-    # redirect to correct page based on their player_type
-    if session['player_type'] == 'DM':
-        return redirect(location='/create-campaign', code=302)
-    elif session['player_type'] == 'Player':
-        return redirect(location='/availability', code=302)
-
-    # this line should not execute.
-    return redirect(location='/login', code=302)
+    return f"username: {username}, pwd: {pwd}, email: {email}" # change this after
 
 @app.route('/characters')
 def characters():
-    if not logged_in():
-        return redirect(location='/login', code=302)
     return render_template("characters.html")
 
 @app.route('/create-campaign')
 def create_campaign():
-    if not logged_in():
-        return redirect(location='/login', code=302)
-
     return render_template("create-campaign.html")
 
 @app.route('/available-campaigns')
 def available_campaign():
-    if not logged_in():
-        return redirect(location='/login', code=302)
-    return render_template("available-campaigns.html")
+    return render_template("available-campaign.html")
 
 @app.route('/availability')
 def availability():
-    if not logged_in():
-        return redirect(location='/login', code=302)
-
     return render_template("availability.html")
 
 @app.route('/account')
 def account():
-    if not logged_in():
-        return redirect(location='/login', code=302)
-
     return render_template("account.html")
 
 @app.route('/logout')
 def logout():
-    logout_user()
-    return redirect(location='/login', code=302)
+    # TODO: erase their session
+    return render_template("login.html")
 
 
 # TODO: CREATE + READ Operations
@@ -240,6 +153,10 @@ def logout():
 
 # TODO: GET: 404 page not found
 
+
+
+
+
 # TODO: UPDATE + DELETE Operations
 # ...
 
@@ -248,7 +165,6 @@ def logout():
 @app.route('/bsg-people')
 def bsg_people():
     query = "SELECT * FROM bsg_people;"
-    db_connection = db.connect_to_database()
     cursor = db.execute_query(db_connection=db_connection, query=query)
     results = cursor.fetchall()
     return render_template("bsg.j2", bsg_people=results)

@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv, find_dotenv
 
 # Load our environment variables from the .env file from the project root, and capture them.
-load_dotenv(find_dotenv('dev.env'))
+load_dotenv(find_dotenv())
 host = os.environ.get("340DBHOST")
 user = os.environ.get("340DBUSER")
 passwd = os.environ.get("340DBPW")

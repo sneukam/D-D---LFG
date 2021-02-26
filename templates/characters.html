@@ -18,7 +18,7 @@
 			  <li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
 			  <li class="navitem navlist"><a href="availability">My Availability</a></li>
 			  <li class="navitem navlist"><a href="account">Account</a></li>
-			  <li class="navitem navlist" id="navlogout"><a href="logout">Log Out</a></li>
+			  <li class="navitem navlist" id="navlogout"><a href="login">Log Out</a></li>
 			</ul>
 		</nav>
     </header>
@@ -88,6 +88,11 @@
 			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
 			<button type="button" class="delete-character-button">Del</button>
 		</ul>
+<!--
+		{{#each characters}}
+ 		       {{> character}}
+  		       {{/each}}
+--> 
 	</div>
 		<button type="button" id="create-character-button"><i class="fas fa-scroll"></i></i></button>
 		<div id="modal-backdrop" class="hidden"></div>
@@ -117,7 +122,7 @@
 			</div>
 		  </div>
 		</div>
-		<div id="edit-character-modal" class="hidden">
+		<div id="edit-character-modal" class="hidden"> <!--class="hidden"   <<< this attribute used here.-->
 		  <div class="modal-dialog">
 			<div class="modal-header">
 			  <h3>Edit this character</h3>
@@ -146,4 +151,21 @@
 			</div>
 		 </div>
 	   </div>
+<!--	
+	<ul class="character_data">
+		<p>Chracter's Name</p>
+		<li class="char_name charitem">
+	            <input type="text" id="character-name" placeholder="Name...">
+		</li>
+		<p>Chracter's Class</p>
+		<li class="char_class charitem">
+	            <input type="text" id="character-class" placeholder="Class...">
+		</li>
+		<p>Chracter's Traits</p>
+		<li class="char_traits charitem">
+	            <input type="text" id="character-traits" placeholder="Race, Alignement, ect...">
+		</li>
+	</ul>
+-->	
+
   </body>
