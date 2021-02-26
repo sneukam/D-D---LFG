@@ -8,19 +8,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.runtime.js"></script>
   </head>
   <body id="page-not-found-body">
-	<header>
-    <h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
-		<nav class="navbar">
-			<ul class="navlist">
-			  <li class="navitem navlist"><a href="characters">Characters</a></li>
-			  <li class="navitem navlist"><a href="create-campaign">Create Campaign</a></li>
-			  <li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
-			  <li class="navitem navlist"><a href="availability">My Availability</a></li>
-			  <li class="navitem navlist"><a href="account">Account</a></li>
-			  <li class="navitem navlist" id="navlogout"><a href="logout">Log Out</a></li>
-			</ul>
-		</nav>
-    </header>
+	{% include 'navbar.html' %}
 	<div class="page-not-found-div">
 		<p>page not found. roll again or <a href="login.html">-login-</a></p>
 	</div>

@@ -10,22 +10,15 @@
     <script src="../static/js/available-campaigns.js" charset="utf-8" defer></script>
   </head>
   <body id="available-campaigns-body">
-	<header>
-		<h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
-		<nav class="navbar">
-			<ul class="navlist">
-			  <li class="navitem navlist"><a href="characters">Characters</a></li>
-			  <li class="navitem navlist"><a href="create-campaign">Create Campaign</a></li>
-			  <li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
-			  <li class="navitem navlist"><a href="availability">My Availability</a></li>
-			  <li class="navitem navlist"><a href="account">Account</a></li>
-			  <li class="navitem navlist" id="navlogout"><a href="logout">Log Out</a></li>
-			</ul>
-		</nav>
-    </header>
+	{% include 'navbar.html' %}
 	<div class="available-campaigns-heading">
 		<br>
-		<h1 class="available-header">Campaigns that fit your schedule</h1>
+		{% if session['player_type'] == 'Player' %}
+			<h1 class="available-header">Campaigns that fit your schedule</h1>
+		{% elif session['player_type'] == 'DM' %}
+			<h1 class="available-header">Viewing all open campaigns</h1>
+			<h4 class="available-header">(Only users of type 'Player' may sign up for a campaign)</h4>
+		{% endif %}
 	</div>
 	<div class="available-campaigns-table-container" id="available-campaigns-table-container">
 		<table class="available-campaigns-table">
