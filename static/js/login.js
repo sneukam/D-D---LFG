@@ -4,43 +4,63 @@
 	
 ********************************/
 
+function post_url(){
+	// url handler location
+	return "http://flip3.engr.oregonstate.edu:6735/login";
+};
+
+function get_credentials() {
+	credentials = {}
+	credentials.username = document.getElementById("login-username").value;
+	credentials.pwd = document.getElementById("login-password").value;
+	return credentials
+}
+
+function login_fields_error_free() {
+	// checks the login fields for errors. returns true if no errors, false otherwise
+	
+	credentials = get_credentials();
+	
+	if (credentials.username == "" || credentials.pwd == "") {
+		alert("username and/or password fields cannot be empty.");
+		return false
+	}
+	return true
+}
+
+function authenticate() {	
+	// Login - POST Request to authenticate
+	var req = new XMLHttpRequest();
+	var payload = get_credentials();
+	var url = post_url();
+	req.open('POST', url, true);
+	req.setRequestHeader('Content-Type', 'application/json');
+	req.addEventListener('load',function(){
+		if(req.status >= 200 && req.status < 400){
+			
+			console.log("POST - success response received");
+			console.log("My response text is... :");
+			console.log(req.responseText);
+			
+			if (req.responseText == "0") {
+				alert("Credentials invalid.");
+				return false
+			}
+			else {
+				document.location.reload()
+			}
+		} else {
+			console.log("Error in network request");
+		}});
+	req.send(JSON.stringify(payload));
+	event.preventDefault();  // unsure if the second one is needed here.
+}
+
 window.addEventListener('DOMContentLoaded', function() {
-	
-	// Check if we already have an active session
-	// ... this actually might be done on the server side. Backend server receives request for <page>, check sessions, if true, serve up the Campaigns Page. If not, Login page.
-	// If yes and user type is 'Player' -> Campaigns Page
-	// If yes and user type is 'DM' -> ... discuss with Ethan
-	
-	/***************************************************
-					... code...
-	****************************************************/
-	
 	document.getElementById("login-button").addEventListener("click", function () {
 		event.preventDefault();
-		var username_string = document.getElementById("login-username").value;
-		var password_string = document.getElementById("login-password").value;
-		
-		// Login - POST Request
-		var req = new XMLHttpRequest();
-		var payload = {username:username_string, pass:password_string};
-		req.open('POST', 'http://flip3.oregonstate.edu:<portnum>/login-request', true);
-		req.setRequestHeader('Content-Type', 'application/json');
-		req.addEventListener('load',function(){
-		  if(req.status >= 200 && req.status < 400){	
-			// does the new page automatically or do we now have our cookies and can manually request the new page?
-			
-			// below just for reference:
-			//var response = JSON.parse(req.responseText);
-			//document.getElementById('binResult').textContent = response.data;
-			
-			/***************************************************
-					... code...
-			****************************************************/
-			
-		  } else {
-			console.log("Error in network request");
-		  }});
-		req.send(JSON.stringify(payload));
-		//event.preventDefault(); // needed?
+		if (login_fields_error_free()) {
+			authenticate();
+		}
 	});
 });
