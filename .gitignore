@@ -5,3 +5,4 @@ index-example.js
 logs/gunicorn.log
 *.env
 .idea\*
+.idea/.name
