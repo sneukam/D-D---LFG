@@ -110,6 +110,53 @@ WHERE status='Open'
 ORDER BY created DESC;
 
 
+/* View all open campaigns, how many users are signed up for that campaign, and if the current user is signed up for the campaign */
+SELECT 	campaigns.campaign_id,
+		campaign_name,
+        desired_history,
+        playstyle,
+     IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays on',
+        num_players as 'Looking for',
+		the_count as 'Signed up',
+		created,
+        IF(participation.signed_up_for="1","1",0) as 'signed_up_for'
+FROM campaigns
+JOIN (
+    	/* Need to join this table to get 'the_count' column of count of players signed up */
+		select count(campaign_id) as 'the_count', campaign_id
+		from campaign_player_roster
+		group by campaign_id
+	) as campaign_count using (campaign_id)
+LEFT JOIN (
+    	/* Join on campaigns the user has signed up for: campaign_id, signed_up_for (0/1) */
+		
+            SELECT 	campaigns.campaign_id,
+					"1" as signed_up_for
+			FROM campaigns
+			JOIN (
+				select count(campaign_id) as 'the_count', campaign_id
+				from campaign_player_roster
+				where user_id=7
+				group by campaign_id
+			) as campaign_count using (campaign_id)
+			WHERE status='Open'
+			ORDER BY created DESC
+			
+			
+	) as participation using (campaign_id)
+WHERE (
+		plays_on=(SELECT IF(monday=1,1,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(tuesday=1,2,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(wednesday=1,3,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(thursday=1,4,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(friday=1,5,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(saturday=1,6,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(sunday=1,7,0) FROM user_availability WHERE user_id=7)
+		)
+	AND status='Open'
+ORDER BY created DESC;
+
+
 /****************************************
 
 		My Availability
@@ -136,21 +183,39 @@ VALUES(5, 0, 0, 0, 0, 0, 0, 0);
 /* § View Campaigns that a particular user is signed up for */
 SELECT 	campaigns.campaign_id,
 		campaign_name,
-		desired_history, 
-		playstyle, 
+        desired_history,
+        playstyle,
 		IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays on',
-		num_players as 'Looking for',
+        num_players as 'Looking for',
 		the_count as 'Signed up',
-		created
+		created,
+        campaigns_signed_up_for.user_id
 FROM campaigns
 JOIN (
+    	/* join this table to get 'the_count' column of count of players signed up */
 		select count(campaign_id) as 'the_count', campaign_id
 		from campaign_player_roster
-		where user_id=3
 		group by campaign_id
 	) as campaign_count using (campaign_id)
-WHERE status='Open'
-ORDER BY created DESC;
+LEFT JOIN (
+		/* join this table to ascertain whether our user is signed up for the campaign */
+		select campaign_id, user_id
+		from campaign_player_roster
+    	where user_id = 7
+	) as campaigns_signed_up_for using (campaign_id)
+WHERE (
+    	(
+		plays_on=(SELECT IF(monday=1,1,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(tuesday=1,2,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(wednesday=1,3,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(thursday=1,4,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(friday=1,5,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(saturday=1,6,0) FROM user_availability WHERE user_id=7)
+	OR 	plays_on=(SELECT IF(sunday=1,7,0) FROM user_availability WHERE user_id=7)
+		)
+	AND status='Open')
+	AND user_id = 7
+ORDER BY created DESC
 
 /* § Update a user's availability */
 UPDATE user_availability
