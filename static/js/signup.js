@@ -20,7 +20,7 @@ function get_credentials() {
 	credentials.username = document.getElementById("signup-username").value;
 	credentials.pwd = document.getElementById("signup-password").value;
 	credentials.email = document.getElementById("signup-email").value;
-	//credentials.player_type = document.getElementById("signup-type").value;
+	credentials.player_type = null;
 	
 	var radioButtons = document.getElementsByName("player_type");
     for(var i = 0; i < radioButtons.length; i++)
@@ -46,13 +46,18 @@ function credentials_errors() {
 		return false
 	}
 	
-	if (credentials.pwd < 8 || credentials.pwd > 255) {
+	if (credentials.pwd.length < 8 || credentials.pwd.length > 255) {
 		alert("Error: Password must be between 8 and 255 characters.");
 		return false
 	}
 	
 	if (credentials.email.length < 7 || credentials.email.length > 255) {
 		alert("Error: Please enter a valid email address");
+		return false
+	}
+	
+	if (credentials.player_type == null) {
+		alert("Error: Please select a user type.");
 		return false
 	}
 	
@@ -66,7 +71,7 @@ function credential_error(cred) {
 		alert("Your desired " + cred + " is already in use. Please choose another");
 	}
 	else {
-		alert("Your desired " + cred + " are already in use. Please select others.");
+		alert("Your desired " + cred + " are already in use. You may navigate to the login page with the link below.");
 	}
 	return
 }
@@ -133,13 +138,18 @@ function create_new_user() {
 		/***************************************************
 				... POST code...
 		****************************************************/
+		console.log("POST - success response received");
+		console.log("My response text is... :");
+		console.log(req.responseText);
+		window.location = req.responseText;   // <-- redirect the user to the page given in the response.
 
 	} else {
 		console.log("Error in network request");
 	}});
-	req.send(payload);    // was originally req.send(JSON.stringify(payload));
+	//req.send(payload);  
+	req.send(JSON.stringify(payload));
 	console.log('POST request sent to create new users.');
-	event.preventDefault();
+	event.preventDefault(); // unsure if the second one is needed here.
 }
 
 window.addEventListener('DOMContentLoaded', function() {
