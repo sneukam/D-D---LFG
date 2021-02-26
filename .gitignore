@@ -6,3 +6,4 @@ logs/gunicorn.log
 *.env
 .idea\*
 .idea/.name
+__pycache__/db_queries.cpython-38.pyc
