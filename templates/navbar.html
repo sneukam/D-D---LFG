@@ -1,0 +1,18 @@
+	<header>
+		<h1 class="site-title"><i class="fas fa-dragon"></i>   D<i class="fab fa-d-and-d"></i>D LFG</h1></a>
+		<nav class="navbar">
+			<ul class="navlist">
+				{% if session['player_type'] == 'Player' %}
+					<li class="navitem navlist"><a href="characters">Characters</a></li>
+					<li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
+					<li class="navitem navlist"><a href="availability">My Availability</a></li>
+					<li class="navitem navlist"><a href="account">Account</a></li>
+				{% elif session['player_type'] == 'DM' %}
+					<li class="navitem navlist"><a href="create-campaign">Create Campaign</a></li>
+					<li class="navitem navlist"><a href="available-campaigns">Available Campaigns</a></li>
+				{% endif %}
+				<li class="navitem navlist"><a href="account">Account</a></li>
+				<li class="navitem navlist" id="navlogout"><a href="logout">Log Out ({{session['username']}}, '{{session['player_type']}}')</a></li>
+			</ul>
+		</nav>
+    </header>
