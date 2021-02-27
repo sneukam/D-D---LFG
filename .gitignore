@@ -7,3 +7,5 @@ logs/gunicorn.log
 .idea\*
 .idea/.name
 __pycache__/db_queries.cpython-38.pyc
+project_step5_group67.zip
+*.zip
