@@ -53,7 +53,6 @@ function authenticate() {
 			console.log("Error in network request");
 		}});
 	req.send(JSON.stringify(payload));
-	event.preventDefault();  // unsure if the second one is needed here.
 }
 
 window.addEventListener('DOMContentLoaded', function() {
