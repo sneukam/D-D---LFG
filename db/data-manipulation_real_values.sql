@@ -46,7 +46,8 @@ WHERE user_id=1;
 ****************************************/
 
 /* § View all campaigns created by a specific Dungeon Master (DM) */
-SELECT campaign_name, num_players, desired_history, playstyle, plays_on, created, status
+/* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
+SELECT campaign_name, num_players, desired_history, playstyle, plays_on, DATE_FORMAT(created,'%b %e %Y') as created, status
 FROM campaigns 
 WHERE dm=2
 ORDER BY status DESC;
@@ -96,10 +97,10 @@ SELECT 	campaigns.campaign_id,
 		campaign_name,
 		desired_history, 
 		playstyle, 
-		IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays on',
-		num_players as 'Looking for',
-		the_count as 'Signed up',
-		created
+		IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays_on',
+		num_players as 'looking_for',
+		the_count as 'signed_up',
+		DATE_FORMAT(created,'%b %e %Y') as created  /* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
 FROM campaigns
 JOIN (
 		select count(campaign_id) as 'the_count', campaign_id
@@ -118,8 +119,8 @@ SELECT 	campaigns.campaign_id,
      IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays on',
         num_players as 'Looking for',
 		the_count as 'Signed up',
-		created,
-        IF(participation.signed_up_for="1","1",0) as 'signed_up_for'
+		DATE_FORMAT(created,'%b %e %Y') /* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
+        IF(participation.signed_up_for='1',1,0) as 'signed_up_for'
 FROM campaigns
 JOIN (
     	/* Need to join this table to get 'the_count' column of count of players signed up */
@@ -154,7 +155,7 @@ WHERE (
 	OR 	plays_on=(SELECT IF(sunday=1,7,0) FROM user_availability WHERE user_id=7)
 		)
 	AND status='Open'
-ORDER BY created DESC;
+ORDER BY signed_up_for DESC, created DESC;
 
 
 /****************************************
@@ -185,10 +186,10 @@ SELECT 	campaigns.campaign_id,
 		campaign_name,
         desired_history,
         playstyle,
-		IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays on',
-        num_players as 'Looking for',
-		the_count as 'Signed up',
-		created,
+		IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays_on',
+        num_players as 'looking_for',
+		the_count as 'signed_up',
+		DATE_FORMAT(created,'%b %e %Y')   /* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
         campaigns_signed_up_for.user_id
 FROM campaigns
 JOIN (
