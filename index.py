@@ -2,6 +2,7 @@ from flask import Flask, session, render_template, json, redirect, abort, reques
 import os
 # import database.db_connector as db    # not sure why 'database' is there.
 import db_connector as db
+import db_queries as queries
 
 # Clear log file (note: Gunicorn startup messages/errors are cleared)
 open('logs/gunicorn.log', 'w').close()
@@ -50,7 +51,7 @@ def logged_in():
         return False
     return False
 
-def get_player_homepage():
+def get_user_homepage():
     # returns the URL for the standard homepage for the given player_type
     try:
         if session['player_type'] == 'Player':
@@ -82,7 +83,7 @@ def root():
 @app.route('/login')
 def login():
     if logged_in():
-        return redirect(location=get_player_homepage(), code=302)
+        return redirect(location=get_user_homepage(), code=302)
     return render_template("login.html")
 
 @app.route('/login', methods = ['POST'])
@@ -116,7 +117,7 @@ def authenticate():
 @app.route('/sign-up')
 def signup():
     if logged_in():
-        return redirect(location=get_player_homepage(), code=302)
+        return redirect(location=get_user_homepage(), code=302)
     return render_template("signup.html")
 
 @app.route('/sign-up/creds', methods = ['GET'])
@@ -208,7 +209,18 @@ def create_campaign():
 def available_campaign():
     if not logged_in():
         return redirect(location='/login', code=302)
-    return render_template("available-campaigns.html")
+
+    db_connection = db.connect_to_database()
+
+    # get available campaigns
+    if session['player_type'] == 'DM':
+        query = queries.view_open_campaigns()
+    elif session['player_type'] == 'Player':
+        query = queries.view_campaigns_matching_user_availability(session['user_id'])
+
+    result = db.execute_query(db_connection, query)
+
+    return render_template("available-campaigns.html", available_campaigns=result.fetchall())
 
 @app.route('/availability')
 def availability():
@@ -257,4 +269,4 @@ def bsg_people():
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 6735))
-    app.run(port=port, debug=True)
+    app.run(port=port, debug=True, threaded=True)
