@@ -53,8 +53,8 @@ WHERE dm=2
 ORDER BY status DESC;
 
 /* § Create */
-INSERT INTO campaigns(dm, campaign_name, num_players, desired_history, playstyle, plays_on, status) 
-VALUES (2, 'A New Campaign', 5, 'Some experience', 'UA Allowed', 6, 'Open');
+INSERT INTO campaigns(dm, campaign_name, num_players, desired_history, playstyle, plays_on, created, status) 
+VALUES (2, 'A New Campaign', 5, 'Some experience', 'UA Allowed', 6, curdate(), 'Open');
 
 /* § Close a campaign */
 UPDATE campaigns 
@@ -68,7 +68,8 @@ WHERE campaign_id=7;
 		
 ****************************************/
 
-/* § View All available campaigns that match <user's> availability */
+/* no longer needed */
+/* § View All available campaigns that match <user's> availability
 SELECT *
 FROM campaigns
 WHERE (
@@ -81,7 +82,50 @@ WHERE (
 	OR 	plays_on=(SELECT IF(sunday=1,7,0) FROM user_availability WHERE user_id=1)
 		)
 	AND status='Open'
-ORDER BY created DESC;
+ORDER BY created ASC; */
+
+/* § View all available campaigns that match <user's> availability. Include whether {user_id}  is signed up for that campaign. */
+SELECT 	campaigns.campaign_id,
+		campaign_name,
+        desired_history,
+        playstyle,
+     IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays_on',
+        num_players as 'looking_for',
+		IFNULL(the_count, 0) as 'signed_up',
+		DATE_FORMAT(created,'%b %e %Y'),
+        IF(participation.signed_up_for='1',1,0) as 'signed_up_for'
+FROM campaigns
+LEFT JOIN (
+    	/* Need to join this table to get 'the_count' column of count of players signed up */
+		select count(campaign_id) as 'the_count', campaign_id
+		from campaign_player_roster
+		group by campaign_id
+	) as campaign_count using (campaign_id)
+LEFT JOIN (
+    	/* Join on campaigns the user has signed up for: campaign_id, signed_up_for (0/1) */
+            SELECT 	campaigns.campaign_id,
+					"1" as signed_up_for
+			FROM campaigns
+			JOIN (
+				select count(campaign_id) as 'the_count', campaign_id
+				from campaign_player_roster
+				where user_id=1
+				group by campaign_id
+			) as campaign_count using (campaign_id)
+			WHERE status='Open'
+			ORDER BY created DESC			
+	) as participation using (campaign_id)
+WHERE (
+		plays_on=(SELECT IF(monday=1,1,0) FROM user_availability WHERE user_id=1)
+	OR 	plays_on=(SELECT IF(tuesday=1,2,0) FROM user_availability WHERE user_id=1)
+	OR 	plays_on=(SELECT IF(wednesday=1,3,0) FROM user_availability WHERE user_id=1)
+	OR 	plays_on=(SELECT IF(thursday=1,4,0) FROM user_availability WHERE user_id=1)
+	OR 	plays_on=(SELECT IF(friday=1,5,0) FROM user_availability WHERE user_id=1)
+	OR 	plays_on=(SELECT IF(saturday=1,6,0) FROM user_availability WHERE user_id=1)
+	OR 	plays_on=(SELECT IF(sunday=1,7,0) FROM user_availability WHERE user_id=1)
+		)
+	AND status='Open'
+ORDER BY signed_up_for DESC, created ASC;
 
 /* § Sign Up */
 INSERT INTO campaign_player_roster(user_id, campaign_id, character_id) 
@@ -99,16 +143,16 @@ SELECT 	campaigns.campaign_id,
 		playstyle, 
 		IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays_on',
 		num_players as 'looking_for',
-		the_count as 'signed_up',
+		IFNULL(the_count,0) as 'signed_up',
 		DATE_FORMAT(created,'%b %e %Y') as created  /* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
 FROM campaigns
-JOIN (
+LEFT JOIN (
 		select count(campaign_id) as 'the_count', campaign_id
 		from campaign_player_roster
 		group by campaign_id
 	) as campaign_count using (campaign_id)
 WHERE status='Open'
-ORDER BY created DESC;
+ORDER BY created ASC;
 
 
 /* View all open campaigns, how many users are signed up for that campaign, and if the current user is signed up for the campaign */
@@ -155,7 +199,7 @@ WHERE (
 	OR 	plays_on=(SELECT IF(sunday=1,7,0) FROM user_availability WHERE user_id=7)
 		)
 	AND status='Open'
-ORDER BY signed_up_for DESC, created DESC;
+ORDER BY signed_up_for DESC, created ASC;
 
 
 /****************************************
@@ -189,7 +233,7 @@ SELECT 	campaigns.campaign_id,
 		IF(plays_on=1,'Monday',IF(plays_on=2,'Tuesday',IF(plays_on=3,'Wednesday',IF(plays_on=4,'Thursday',IF(plays_on=5,'Friday',IF(plays_on=6,'Saturday',IF(plays_on=7,'Sunday',NULL))))))) as 'plays_on',
         num_players as 'looking_for',
 		the_count as 'signed_up',
-		DATE_FORMAT(created,'%b %e %Y')   /* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
+		DATE_FORMAT(created,'%b %e %Y'),   /* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
         campaigns_signed_up_for.user_id
 FROM campaigns
 JOIN (
@@ -216,7 +260,7 @@ WHERE (
 		)
 	AND status='Open')
 	AND user_id = 7
-ORDER BY created DESC
+ORDER BY created ASC
 
 /* § Update a user's availability */
 UPDATE user_availability
