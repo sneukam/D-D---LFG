@@ -13,7 +13,7 @@
 	<div class="availability-parent-encompassing" id="parent-avail-div">
 		<div class="campaigns-signed-up-availability" id="campaigns-signed-up-availability-id">
 			<h2 class="avail-h2-headers" id="currently-signed-up-for">Signed Up For</h2>
-			<table class="campaigns-availability-table" id="campaigns-table-parent">
+			<table class="campaigns-availability-table" id="campaigns-availability-table-id">
 				<thead class="avail-head">
 					<tr id="avail-head-tr">
 						<th>Campaign</th>
@@ -22,36 +22,73 @@
 						<th>Signed Up</th>
 					</tr
 				</thead>
-				<tbody>
-					<tr>
-						<td>Saviors of Ragnarok...</td>
-						<td>Sunday</td>
-						<td>8</td>
-						<td>2</td>
-					<tr>
-					<tr>
-						<td>House of Shards</td>
-						<td>Saturday</td>
-						<td>4</td>
-						<td>3</td>
-					<tr>
+				<tbody id="campaigns-availability-table-body">
+					{% for campaign in available_campaigns %}
+						<tr>
+							<td>{{campaign.campaign_name|truncate(22, true, '..', 0)}}</td>
+							<td>{{campaign.plays_on|truncate(3, true, '', 0)}}</td>
+							<td>{{campaign.looking_for}}</td>
+							<td>{{campaign.signed_up}}</td>
+						</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</div>
 		<div class="availability" id="availability-div">	
 			<h2 class="avail-h2-headers">Availability</h2>
-			<p>D&D games are played in the evenings, US Pacific time. By updating your availability below, you can view <a href="available-campaigns.html">Available Campaigns</a> that are looking for players on similar days.</p>
+			<p>D&D games are played in the evenings, US Pacific time. By updating your availability below, you can view <a href="available-campaigns">Available Campaigns</a> that are looking for players on similar days.</p>
 			<p>The table on the left displays campaigns you are currently signed up for that are still looking for players. If you de-select a day below that appears in the table, you will be removed from that campaign.</p>
 			<form id="availability-form">
-				<br>
-				<!-- <p>My Availability</p> -->
-				<input type="checkbox" name="monday" value="monday">Monday</input><br>
-				<input type="checkbox" name="tuesday" value="tuesday">Tuesday</input><br>
-				<input type="checkbox" name="wednesday" value="wednesday">Wednesday</input><br>
-				<input type="checkbox" name="thursday" value="thursday">Thursday</input><br>
-				<input type="checkbox" name="friday" value="friday">Friday</input><br>
-				<input type="checkbox" name="saturday" value="saturday" checked>Saturday</input><br>
-				<input type="checkbox" name="sunday" value="sunday" checked>Sunday</input><br>
+			
+				<!-- Monday -->
+				{% if my_availability.monday == 1 %}
+					<input type="checkbox" class="availability_checkboxes" name="monday" value="monday" checked>Monday</input><br>
+				{% elif my_availability.monday == 0 %}
+					<input type="checkbox" class="availability_checkboxes" name="monday" value="monday" checked>Monday</input><br>
+				{% endif %}
+				
+				<!-- Tuesday -->
+				{% if my_availability.tuesday == 1 %}
+					<input type="checkbox" class="availability_checkboxes" name="tuesday" value="tuesday" checked>Tuesday</input><br>
+				{% elif my_availability.tuesday == 0 %}
+					<input type="checkbox" class="availability_checkboxes" name="tuesday" value="tuesday">Tuesday</input><br>
+				{% endif %}
+				
+				<!-- Wednesday -->
+				{% if my_availability.wednesday == 1 %}
+					<input type="checkbox" class="availability_checkboxes" name="wednesday" value="wednesday" checked>Wednesday</input><br>
+				{% elif my_availability.wednesday == 0 %}
+					<input type="checkbox" class="availability_checkboxes" name="wednesday" value="wednesday">Wednesday</input><br>
+				{% endif %}
+				
+				<!-- Thursday -->
+				{% if my_availability.thursday == 1 %}
+					<input type="checkbox" class="availability_checkboxes" name="thursday" value="thursday" checked>Thursday</input><br>
+				{% elif my_availability.thursday == 0 %}
+					<input type="checkbox" class="availability_checkboxes" name="thursday" value="thursday">Thursday</input><br>
+				{% endif %}
+				
+				<!-- Friday -->
+				{% if my_availability.friday == 1 %}
+					<input type="checkbox" class="availability_checkboxes" name="friday" value="friday" checked>Friday</input><br>
+				{% elif my_availability.friday == 0 %}
+					<input type="checkbox" class="availability_checkboxes" name="friday" value="friday">Friday</input><br>
+				{% endif %}
+				
+				<!-- Saturday -->
+				{% if my_availability.saturday == 1 %}
+					<input type="checkbox" class="availability_checkboxes" name="saturday" value="saturday" checked>Saturday</input><br>
+				{% elif my_availability.saturday == 0 %}
+					<input type="checkbox" class="availability_checkboxes" name="saturday" value="saturday">Saturday</input><br>
+				{% endif %}
+				
+				<!-- Sunday -->
+				{% if my_availability.sunday == 1 %}
+					<input type="checkbox" class="availability_checkboxes" name="sunday" value="sunday" checked>Sunday</input><br>
+				{% elif my_availability.sunday == 0 %}
+					<input type="checkbox" class="availability_checkboxes" name="sunday" value="sunday">Sunday</input><br>
+				{% endif %}
+				
 				<br>
 				<input type="submit" value="Submit" id="availability-submit-button">
 			</form>
