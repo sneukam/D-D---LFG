@@ -86,7 +86,7 @@ def login():
         return redirect(location=get_user_homepage(), code=302)
     return render_template("login.html")
 
-@app.route('/login', methods = ['POST'])
+@app.route('/login', methods=['POST'])
 def authenticate():
     # Tests username and password, and logs the user in if they are valid
 
@@ -120,7 +120,7 @@ def signup():
         return redirect(location=get_user_homepage(), code=302)
     return render_template("signup.html")
 
-@app.route('/sign-up/creds', methods = ['GET'])
+@app.route('/sign-up/creds', methods=['GET'])
 def credential_check():
     """
     Returns values denoting if the username and/or email arguments are already in-use
@@ -150,7 +150,7 @@ def credential_check():
     # this statement should never be hit, had it here for testing purposes, keeping it around for now.
     return "1"
 
-@app.route('/sign-up', methods = ['POST'])
+@app.route('/sign-up', methods=['POST'])
 def new_user():
     # Creates a new user with the provided username, pwd, and email
     # Assumes credentials have been checked via the /sign-up/creds route handler.
@@ -187,7 +187,7 @@ def new_user():
     if session['player_type'] == 'DM':
         return redirect(location='/create-campaign', code=302)
     elif session['player_type'] == 'Player':
-        return redirect(location='/availability', code=302)
+        return redirect(location='/available-campaigns', code=302)
 
     # this line should not execute.
     return redirect(location='/login', code=302)
@@ -218,16 +218,83 @@ def available_campaign():
     elif session['player_type'] == 'Player':
         query = queries.view_campaigns_matching_user_availability(session['user_id'])
 
+    # return page with data
     result = db.execute_query(db_connection, query)
-
     return render_template("available-campaigns.html", available_campaigns=result.fetchall())
 
-@app.route('/availability')
-def availability():
+@app.route('/available-campaigns', methods=['POST'])
+def join_or_leave_campaign():
+    """
+    adds or removes a user to/from a campaign
+    """
     if not logged_in():
         return redirect(location='/login', code=302)
 
-    return render_template("availability.html")
+    db_connection = db.connect_to_database()
+
+    # execute query (join or leave)
+    campaign = request.get_json()
+    if campaign['action'] == 'Join':
+        #TODO: update JS and this handler to handle the character_id if a user chooses.
+        query = queries.join_campaign(session['user_id'], campaign['id'], character_id='Null')
+    elif campaign['action'] == 'Leave':
+        query = queries.leave_campaign(session['user_id'], campaign['id'])
+    else:
+        return json.dumps({"error": "no action or incorrect action specified"}), 500
+    db.execute_query(db_connection, query)
+
+    # JS will automatically reload the page on a success response
+    return "1"
+
+@app.route('/availability')
+def availability():
+    """
+    Serves the My Availability page
+    """
+    print("hit the @/'availability' handler")
+    if not logged_in():
+        return redirect(location='/login', code=302)
+
+    # Retrieve user's availability data
+    db_connection = db.connect_to_database()
+    query_signed_up_for = queries.view_campaigns_user_signed_up_for(session['user_id'])
+    query_my_availability = queries.view_my_availability(session['user_id'])
+    result_signed_up_for = db.execute_query(db_connection, query_signed_up_for)
+    result_my_availability = db.execute_query(db_connection, query_my_availability)
+
+    # error checking - can delete all this
+    result_temp_my_availability = db.execute_query(db_connection, query_my_availability)
+    print(result_temp_my_availability.fetchall())
+
+    return render_template("availability.html", available_campaigns=result_signed_up_for.fetchall(), \
+                           my_availability=result_my_availability.fetchall()[0])
+
+@app.route('/availability', methods=['POST'])
+def update_availability():
+    """
+    Updates a user's availability
+        and removes them from any Open campaigns where they are now unavailable to play on that day
+    POST request accepts a JSON object with the user's updated availability:
+        ex: {monday:1, tuesday:0, wednesday:1, ...}
+    """
+    print("hit the @/'availability' POST handler")
+    if not logged_in():
+        return redirect(location='/login', code=302)
+
+    user_availability = request.get_json()
+    print('user availability = ')
+    print(user_availability)
+
+    # execute queries
+    db_connection = db.connect_to_database()
+    query_update_availability = \
+        queries.update_my_availability(session['user_id'], user_availability)
+    query_del_campaign_participation = \
+        queries.delete_user_from_campaign_if_availability_removed(session['user_id'])
+    db.execute_query(db_connection, query_update_availability)
+    db.execute_query(db_connection, query_del_campaign_participation)
+
+    return "1"
 
 @app.route('/account')
 def account():
