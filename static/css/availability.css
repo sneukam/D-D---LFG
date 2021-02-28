@@ -5,7 +5,7 @@
 ***********************************************/
 
 #availability-body {
-  background-color: #FFFFFF;  /* this will override the standard body class at the top. */
+  background-color: #FFFFFF;
   background-image: url("../img/account2.jpg");
   margin: 0;
   font-family: "Roboto", sans-serif, "Vecna";
@@ -18,11 +18,7 @@
 	position: relative;
 	margin: auto;
 	margin-top: 4%;
-	width: 75%;
-}
-
-#campaigns-table-parent {
-	border-radius: 25px;
+	width: 76%;
 }
 
 #avail-h2-headers {
@@ -31,7 +27,7 @@
 
 .campaigns-signed-up-availability {
 	position: relative;
-	width: 450px;
+	width: 475px;
 	padding: 0px 20px 20px 20px;
 	table-layout: fixed;
 	white-space: nowrap;
@@ -47,6 +43,11 @@
 
 .campaigns-availability-table {
 	/*table-layout:fixed; didn't work*/
+}
+
+#campaign-availability-table-id {
+	padding-left: 20px;
+	padding-right: 20px;
 }
 
 .campaigns-availability-table, thead, tr, th, td {
@@ -81,6 +82,7 @@
 	/*margin-right: 20%;*/
 	/*border-left: 2px solid black;*/
 	padding-left: 20px;
+	padding-right: 20px;
 	background-color: white;
 	border-radius: 15px;
 	opacity: .9;
