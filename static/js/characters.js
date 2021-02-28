@@ -104,7 +104,7 @@ window.addEventListener('DOMContentLoaded', function () {
 	document.querySelector('#edit-character-modal .modal-cancel-button').addEventListener('click', hideEditForm)
 	document.querySelector('#edit-character-modal .modal-accept-button').addEventListener('click', editCharacter)
 	
-	// 'Del Character' - Button Listeners
+	// 'Delete Character' - Button Listeners
 	var delCharacterButtons = document.getElementsByClassName('delete-character-button');
 	console.log(delCharacterButtons);
 	for (let i=0; i<delCharacterButtons.length; i++) {
