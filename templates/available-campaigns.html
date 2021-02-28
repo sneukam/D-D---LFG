@@ -16,8 +16,8 @@
 		{% if session['player_type'] == 'Player' %}
 			<h1 class="available-header">Campaigns that fit your schedule</h1>
 		{% elif session['player_type'] == 'DM' %}
-			<h1 class="available-header">Viewing all open campaigns</h1>
-			<h4 class="available-header">(Only users of type 'Player' may sign up for a campaign)</h4>
+			<h1 class="available-header">All open campaigns</h1>
+			<p>*Dungeon Masters cannot sign up for campaigns, but may view all open ones.</p>
 		{% endif %}
 	</div>
 	<div class="available-campaigns-table-container" id="available-campaigns-table-container">
@@ -27,7 +27,7 @@
 					<td hidden>id</td>
 					<td>Name</td>
 					<td>Playstyle</td>
-					<td class="no-wrap">Desired History</td>
+					<td class="no-wrap">Desired Experience</td>
 					<td>Created</td>
 					<td>Plays On</td>
 					<td class="no-wrap">Looking for</td>
