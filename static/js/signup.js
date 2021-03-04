@@ -16,18 +16,21 @@ function post_url(){
 	
 function get_credentials() {
 	// returns a JSON object with the desired credentials the user has entered on the page
+	console.log("Getting user credentials from the page");
 	var credentials = {};
 	credentials.username = document.getElementById("signup-username").value;
 	credentials.pwd = document.getElementById("signup-password").value;
 	credentials.email = document.getElementById("signup-email").value;
-	credentials.player_type = null;
+	if(document.querySelector('#user_type_player:checked') !== null) {
+		credentials.player_type = document.getElementById("user_type_player").value;
+	}
+	else if(document.querySelector('#user_type_player:checked') !== null) {
+		credentials.player_type = document.getElementById("user_type_player").value;
+	}
+	console.log('Player type = ' + credentials.player_type);
 	
-	var radioButtons = document.getElementsByName("player_type");
-    for(var i = 0; i < radioButtons.length; i++)
-    {
-        if(radioButtons[i].checked == true) { credentials.player_type = radioButtons[i].value; }
-    }
-	
+	console.log("Credentials");
+	console.log(credentials);
 	return credentials;
 }
 
@@ -46,17 +49,17 @@ function credentials_errors() {
 		return false
 	}
 	
-	if (credentials.pwd.length < 8 || credentials.pwd.length > 255) {
-		alert("Error: Password must be between 8 and 255 characters.");
+	if (credentials.pwd.length < 5 || credentials.pwd.length > 255) {
+		alert("Error: Password must be between 5 and 255 characters.");
 		return false
 	}
 	
 	if (credentials.email.length < 7 || credentials.email.length > 255) {
-		alert("Error: Please enter a valid email address");
+		alert("Error: Email address length must be between 7 and 255 characters.");
 		return false
 	}
 	
-	if (credentials.player_type == null) {
+	if (credentials.player_type != 'Player' && credentials.player_type != 'DM') {
 		alert("Error: Please select a user type.");
 		return false
 	}
@@ -119,7 +122,7 @@ function credentials_uniqueness() {
 function create_new_user() {
 	// POST request to create the new user
 	
-	console.log("entered the create_new_user() function");
+	console.log("Creating a new user");
 	
 	var req = new XMLHttpRequest();
 	var payload = get_credentials();
@@ -129,20 +132,11 @@ function create_new_user() {
 	req.setRequestHeader('Content-Type', 'application/json');
 	req.addEventListener('load',function(){
 	if(req.status >= 200 && req.status < 400){
-		// does the new page automatically or do we now have our cookies and can manually request the new page?
-
-		// below just for reference:
-		// var response = JSON.parse(req.responseText);
-		// document.getElementById('binResult').textContent = response.data;
-
-		/***************************************************
-				... POST code...
-		****************************************************/
 		console.log("POST - success response received");
 		console.log("My response text is... :");
 		console.log(req.responseText);
-		window.location = req.responseText;   // <-- redirect the user to the page given in the response.
-
+		//window.location = req.responseText;   // <-- redirect the user to the page given in the response.
+		window.location.reload()
 	} else {
 		console.log("Error in network request");
 	}});
@@ -157,7 +151,6 @@ window.addEventListener('DOMContentLoaded', function() {
 	document.getElementById("signup-button").addEventListener("click", function () {
 		// Clicking Sign-In will trigger a series of steps to validate their proposed credentials and if successful, create their profile & login automatically
 		event.preventDefault();
-		console.log("entered event listener");
 		var continue_bool = credentials_errors();
 		if (continue_bool) {continue_bool = credentials_uniqueness()};
 		//if (continue_bool) {create_new_user()};  <-- this was being executed before the GET request returned.
