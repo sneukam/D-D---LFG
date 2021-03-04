@@ -7,12 +7,44 @@ All functions return: string
 
 """
 -------------------------------------------
+        Sign Up Page
+-------------------------------------------
+"""
+
+def create_new_user(username, pwd, email, user_type):
+    return f"INSERT INTO users(username, password, email, player_type) \
+            VALUES('{username}', '{pwd}', '{email}', '{user_type}');"
+
+def get_userid(username, email):
+    return f"SELECT user_id FROM users WHERE username = '{username}' AND email = '{email}';"
+
+def get_user_with_username(username):
+    return f"SELECT * FROM users WHERE username = '{username}';"
+
+def get_user_with_email(email):
+    return f"SELECT * FROM users WHERE email = '{email}';"
+
+def insert_new_user_availability(user_id):
+    return f"INSERT INTO \
+                user_availability( \
+                    user_id, \
+                    monday, \
+                    tuesday, \
+                    wednesday, \
+                    thursday, \
+                    friday, \
+                    saturday, \
+                    sunday) \
+                VALUES({user_id},1,1,1,1,1,1,1);"
+
+"""
+-------------------------------------------
         Available Campaigns Page
 -------------------------------------------
 """
 
 
-def view_campaigns_matching_user_availability(user_id):
+def get_campaigns_matching_user_availability(user_id):
     """
     View all campaigns that match a user's availability
     """
@@ -76,7 +108,7 @@ def view_campaigns_matching_user_availability(user_id):
                 ORDER BY signed_up_for DESC, created ASC;"
 
 
-def view_open_campaigns():
+def get_open_campaigns():
     """
     View all open campaigns
     """
@@ -104,7 +136,6 @@ def view_open_campaigns():
             WHERE status='Open' \
             ORDER BY created ASC;"
 
-
 def join_campaign(user_id, campaign_id, character_id):
     return f"   INSERT INTO campaign_player_roster(user_id, campaign_id, character_id) \
                 VALUES({user_id}, {campaign_id}, {character_id});"
@@ -119,7 +150,7 @@ def leave_campaign(user_id, campaign_id):
 -------------------------------------------
 """
 
-def view_campaigns_user_signed_up_for(user_id):
+def get_campaigns_user_signed_up_for(user_id):
     """
     returns a query for campaigns that a user is signed up for, where the campaign is still 'Open'
     """
@@ -166,7 +197,7 @@ def view_campaigns_user_signed_up_for(user_id):
                     AND user_id = {user_id} \
                 ORDER BY created ASC"
 
-def view_my_availability(user_id):
+def get_my_availability(user_id):
     """
     returns a query for a given user's availability
     """
@@ -224,3 +255,53 @@ def delete_user_from_campaign_if_availability_removed(user_id):
                                 AND status='Open' \
                         ) as remove_from_campaign \
                     )"
+
+
+"""
+-------------------------------------------
+        Create Campaign Page
+-------------------------------------------
+"""
+
+def get_campaigns_by_dm(user_id, status):
+    """
+    Returns campaigns created by a specific DM where status is either 'Open' or 'Closed'
+    """
+
+    return f"SELECT \
+                campaign_id, \
+                campaign_name, \
+                num_players, \
+                desired_history, \
+                playstyle, \
+                IF(plays_on=1,'Mon',\
+                    IF(plays_on=2,'Tues',\
+                    IF(plays_on=3,'Wed',\
+                    IF(plays_on=4,'Thur',\
+                    IF(plays_on=5,'Fri',\
+                    IF(plays_on=6,'Sat',\
+                    IF(plays_on=7,'Sun',NULL))))))) as 'plays_on', \
+                DATE_FORMAT(created,'%%b %%e %%Y') as created, status, COUNT(campaign_id) as signed_up \
+            FROM campaigns \
+            LEFT JOIN campaign_player_roster using (campaign_id) \
+            WHERE dm={user_id} \
+                AND status='{status}' \
+            GROUP BY campaign_id \
+            ORDER BY created ASC;"
+
+def create_campaign(user_id, campaign_name, num_players, desired_history, playstyle, plays_on):
+    """
+    Creates a campaign
+    """
+
+    return f"INSERT INTO \
+                campaigns(dm, campaign_name, num_players, desired_history, playstyle, plays_on, created, status) \
+            VALUES ({user_id}, '{campaign_name}', {num_players}, '{desired_history}', \
+                    '{playstyle}', {plays_on}, curdate(), 'Open');"
+
+def update_close_campaign(user_id, campaign_id):
+    """
+    Closes campaign <campaign_id>
+    """
+
+    return f"UPDATE campaigns SET status='Closed' WHERE campaign_id={campaign_id} AND dm={user_id};"
