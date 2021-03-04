@@ -76,10 +76,7 @@ def logout_user():
     return True
 
 # Routes
-@app.route('/',)
-def root():
-    return redirect(location='/login', code=302)
-
+@app.route('/')
 @app.route('/login')
 def login():
     if logged_in():
@@ -88,7 +85,9 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def authenticate():
-    # Tests username and password, and logs the user in if they are valid
+    """
+    Authenticates user w/ username + pwd, logs them in if valid, returns '0' otherwise
+    """
 
     # capture credentials
     credentials = request.get_json()
@@ -130,21 +129,19 @@ def credential_check():
     email = request.args['email']
 
     db_connection = db.connect_to_database()
-    username_query = f"SELECT * FROM users WHERE username = '{username}'"
+    username_query = queries.get_user_with_username(username)
     username_result = db.execute_query(db_connection, username_query)
-    email_query = f"SELECT * FROM users WHERE email = '{email}'"
+    email_query = queries.get_user_with_email(email)
     email_result = db.execute_query(db_connection, email_query)
 
     # return logic based on if the email/username are or are not unique
     if email_result.rowcount == 0 and username_result.rowcount == 0:
-        return "1"  # tells the JS GET handler that these are available for use
+        return "1"  # must be 1. tells the JS GET handler that the Username+Email are available for use
     elif email_result.rowcount == 0:
         return "username"
     elif username_result.rowcount == 0:
         return "email"
     else:
-        #print("both username and email are not unique (duplicate values already exist for both)")
-        #print("test username_result is None")
         return "username and email"
 
     # this statement should never be hit, had it here for testing purposes, keeping it around for now.
@@ -152,8 +149,8 @@ def credential_check():
 
 @app.route('/sign-up', methods=['POST'])
 def new_user():
-    # Creates a new user with the provided username, pwd, and email
-    # Assumes credentials have been checked via the /sign-up/creds route handler.
+    # Creates a new user with the provided username, pwd, email, user_type
+    # Assumes credentials have already been validated (we are not using an already taken username or email)
 
     print("POST request to create user received")
 
@@ -162,26 +159,31 @@ def new_user():
     username = credentials['username']
     pwd = credentials['pwd']
     email = credentials['email']
-    player_type = credentials['player_type']
+    user_type = credentials['player_type']
 
     # TODO: Cleanse the query params.
 
     # create a new user
     db_connection = db.connect_to_database()
-    query = f"INSERT INTO users(username, password, email, player_type) " \
-            f"VALUES('{username}', '{pwd}', '{email}', '{player_type}');"
-    result = db.execute_query(db_connection, query)
 
-    # get the newly created user's id
-    query = f"SELECT user_id FROM users WHERE username = '{username}' AND email = '{email}'"
-    result = db.execute_query(db_connection, query)
+    # --step 1
+    query_create_new_user = queries.create_new_user(username, pwd, email, user_type)
+    db.execute_query(db_connection, query_create_new_user)
+
+    # --step 2
+    query_get_userid = queries.get_userid(username, email)
+    result = db.execute_query(db_connection, query_get_userid)
     user_id = result.fetchall()[0]['user_id']
 
-    # set the user's session cookie
+    # --step 3  (this should really be a DB trigger)
+    query_create_user_availability = queries.insert_new_user_availability(user_id)
+    db.execute_query(db_connection, query_create_user_availability)
+
+    # set the newly created user's session cookies
     session['user_id'] = user_id
     session['username'] = username
     session['email'] = email
-    session['player_type'] = player_type
+    session['player_type'] = user_type
 
     # redirect to correct page based on their player_type
     if session['player_type'] == 'DM':
@@ -189,7 +191,7 @@ def new_user():
     elif session['player_type'] == 'Player':
         return redirect(location='/available-campaigns', code=302)
 
-    # this line should not execute.
+    # this line should never execute. Here as a just-in-case.
     return redirect(location='/login', code=302)
 
 @app.route('/characters')
@@ -200,10 +202,68 @@ def characters():
 
 @app.route('/create-campaign')
 def create_campaign():
+    """
+    Serves the Create Campaign page to Dungeon Masters
+    """
     if not logged_in():
         return redirect(location='/login', code=302)
+    elif session['player_type'] != 'DM':
+        print(f"Error: User: {session['user_id']} accessed the create-campaign handler and is not a DM. Logging out.")
+        logout_user()
+        return redirect(location='/login', code=302)
 
-    return render_template("create-campaign.html")
+    # get the DM's campaign data
+    db_connection = db.connect_to_database()
+    query_open_campaigns = queries.get_campaigns_by_dm(session['user_id'], status='Open')
+    query_closed_campaigns = queries.get_campaigns_by_dm(session['user_id'], status='Closed')
+    result_open_campaigns = db.execute_query(db_connection, query_open_campaigns)
+    result_closed_campaigns = db.execute_query(db_connection, query_closed_campaigns)
+
+    return render_template("create-campaign.html", \
+                           open_campaigns=result_open_campaigns.fetchall(),\
+                           closed_campaigns=result_closed_campaigns.fetchall())
+
+@app.route('/create-campaign', methods=['POST'])
+def create_new_campaign():
+    """
+    Creates a new campaign in the database
+    """
+
+    # create campaign
+    db_connection = db.connect_to_database()
+    campaign = request.get_json()
+    print("Received a POST request to create a new campaign.")
+    print("campaign JSON/Dict is: ")
+    print(campaign)
+    query = queries.create_campaign(session['user_id'], \
+                                    campaign['name'], \
+                                    campaign['num_players'], \
+                                    campaign['desired_history'], \
+                                    campaign['playstyle'], \
+                                    campaign['plays_on'] \
+                                    )
+    db.execute_query(db_connection, query)
+
+    # JS will automatically reload the page on a success response
+    return "1"
+
+@app.route('/close-campaign', methods=['POST'])
+def close_campaign():
+    """
+    Closes a campaign
+    """
+
+    # close a campaign
+    db_connection = db.connect_to_database()
+    campaign = request.get_json()
+    print("Received a POST request to close a campaign.")
+    print("campaign JSON/Dict is: ")
+    print(campaign)
+    query = queries.update_close_campaign(session['user_id'], campaign['id'])
+    db.execute_query(db_connection, query)
+
+    # JS will automatically reload the page on a success response
+    return "1"
 
 @app.route('/available-campaigns')
 def available_campaign():
@@ -214,9 +274,9 @@ def available_campaign():
 
     # get available campaigns
     if session['player_type'] == 'DM':
-        query = queries.view_open_campaigns()
+        query = queries.get_open_campaigns()
     elif session['player_type'] == 'Player':
-        query = queries.view_campaigns_matching_user_availability(session['user_id'])
+        query = queries.get_campaigns_matching_user_availability(session['user_id'])
 
     # return page with data
     result = db.execute_query(db_connection, query)
@@ -257,8 +317,8 @@ def availability():
 
     # Retrieve user's availability data
     db_connection = db.connect_to_database()
-    query_signed_up_for = queries.view_campaigns_user_signed_up_for(session['user_id'])
-    query_my_availability = queries.view_my_availability(session['user_id'])
+    query_signed_up_for = queries.get_campaigns_user_signed_up_for(session['user_id'])
+    query_my_availability = queries.get_my_availability(session['user_id'])
     result_signed_up_for = db.execute_query(db_connection, query_signed_up_for)
     result_my_availability = db.execute_query(db_connection, query_my_availability)
 
