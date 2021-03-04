@@ -68,8 +68,13 @@ SET status='Closed'
 WHERE campaign_id=7
 AND dm=2;
 
-/* View Roster for a campaign */
-
+/* View Roster for a Campaign */
+SELECT *
+FROM campaign_player_roster
+LEFT JOIN users using (user_id)
+LEFT JOIN characters on campaign_player_roster.character_id = characters.character_id
+WHERE campaign_player_roster.campaign_id = 1
+AND player_type = 'Player'
 
 
 /****************************************
