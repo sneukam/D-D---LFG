@@ -44,20 +44,29 @@ WHERE user_id=:user_idInput;
 		
 ****************************************/
 
-/* § View all campaigns created by a specific Dungeon Master (DM) */
-SELECT campaign_name, num_players, desired_history, playstyle, plays_on, DATE_FORMAT(created,'%b %e %Y'), status
-FROM campaigns 
-WHERE dm=:user_idInput
-ORDER BY status DESC;
+/* § View 'Open' (or Closed) campaigns created by a specific Dungeon Master (DM) */
+/* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
+SELECT campaign_id, campaign_name, num_players, desired_history, playstyle, 
+	IF(plays_on=1,'Mon',IF(plays_on=2,'Tues',IF(plays_on=3,'Wed',IF(plays_on=4,'Thur',IF(plays_on=5,'Fri',IF(plays_on=6,'Sat',IF(plays_on=7,'Sun',NULL))))))) as 'plays_on',
+	DATE_FORMAT(created,'%b %e %Y') as created, status, COUNT(campaign_id) as signed_up
+FROM campaigns
+LEFT JOIN campaign_player_roster using (campaign_id)
+WHERE dm={dm_id}
+AND status={status}
+GROUP BY campaign_id
+ORDER BY created ASC;
 
 /* § Create */
-INSERT INTO campaigns(dm, campaign_name, num_players, desired_history, playstyle, plays_on, status) 
-VALUES (:dmInput, :campaign_nameInput, :num_playersInput, :desired_historyInput, :playstyleInput, :plays_onInput, :statusInput);
+INSERT INTO campaigns(dm, campaign_name, num_players, desired_history, playstyle, plays_on, created, status) 
+VALUES (2, 'A New Campaign', 5, 'Some experience', 'UA Allowed', 6, curdate(), 'Open');
 
 /* § Close a campaign */
 UPDATE campaigns 
 SET status='Closed'
-WHERE campaign_id=:campaign_idInput;
+WHERE campaign_id={campaign_id}
+AND dm={dm_id};
+
+/* View Roster for a campaign */
 
 
 /****************************************
@@ -165,7 +174,7 @@ FROM user_availability
 WHERE user_id = {user_id};
 
 /* § Create (this query runs when a user creates an account) */
-INSERT into my_availability(
+INSERT into user_availability(
 	user_id, 
 	monday, 
 	tuesday, 
