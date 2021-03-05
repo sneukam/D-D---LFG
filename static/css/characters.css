@@ -241,3 +241,39 @@ error-container {
 .edit-character-input-element textarea {
   min-height: 64px;
 }
+
+#create-character-button-container-outer {
+	max-width:75%;
+    height:40px;
+    /*background-color:red;*/
+    margin:0 auto;
+    position: relative;
+	margin-bottom: 30px;
+	
+	position: relative;
+	z-index: 1;
+	max-width: 70%;
+	/*margin: 0 auto 50px;*/
+	/*padding: 10px 15px 10px 15px;*/
+	text-align: center;
+	text-decoration: none;
+}
+
+#create-character-button-container {
+	float:right;
+}
+
+#create-character-button-two {
+	font-size: 16px;
+	width: auto;
+	height:40px;
+	/*padding: 5px;*/
+	/*float: right;*/
+	border-radius: 7px;
+	background-color: #319df6;
+	color: #fff;
+}
+
+#create-character-button-two:hover {
+	background-color: #087dde;
+}
