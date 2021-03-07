@@ -4,6 +4,16 @@
 
 ************************************************/
 
+function get_post_url_account() {
+	// returns the URL used for the POST request to create a new campaign
+	return 'http://flip3.engr.oregonstate.edu:6735/account';
+}
+
+function cleanString(input_string) {
+	// removes all single quote or double quote characters that are found inside a string.
+	return input_string.replace(/['"]+/g, '');
+}
+
 function clearEditForm() {
 	var accountInputs = document.getElementsByClassName('account-edit-input');
 	for (var i = 0; i < characterInputElems.length; i++) {
@@ -11,24 +21,89 @@ function clearEditForm() {
 	}
 }
 
-function submit_edit_form() {
+function accountErrors(account) {
+	// returns true if there are account errors, false otherwise. Alerts displayed based on errror.
 	
-	// populate edit form
+	if (account.name == '' || account.email == '') {
+		alert("account name and email cannot be blank");
+		return true;
+	}
+	else if (account.name.length > 50 || account.name.length < 3) {
+		alert("name must be between 3 and 50 characters");
+		return true;
+	}
+	else if (account.email.length > 255 || account.email.length < 7) {
+		alert("email must be between 7 and 255 characters");
+		return true;
+	}
+	else if (account.pw != '' && (account.pw.length > 255 || account.pw.length < 5)) {
+		alert("password must be between 5 and 255 characters");
+		return true;
+	}
+	else if (account.campaign_history.length > 255) {
+		alert("campaign history must be less than 255 characters");
+		return true;
+	}
 	
-	// show edit form
-	
-	var username = document.getElementById('account-username').value;
-	var name = document.getElementById('account-name').value;
-	var email = document.getElementById('account-email').value;
-	var playstyle = document.getElementById('account-playstyle').value;
-	var campaign_history = document.getElementById('account-campaignhistory').value;
-	var updatedAccount = {username: username, name: name, email: email, playstyle: playstyle, campaign_history: campaign_history};
+	return false;
+}
 
-	if (characterName && characterClass && characterTraits) {
-		alert("Pushing account UPDATE to database via POST\n\n" + JSON.stringify(updatedCharacter));
-		// ** send data to DB via POST request
-		hideEditForm();
-	} else {alert('You must specify all fields!');}
+function continueIfChangePw(account) {
+	// if the user has changed their password, ask them if they want to continue
+	
+	if (account.pw != '') {
+		var con_tinue = confirm('You have entered a new password. You will be required to login again. Continue?')
+	}
+	else {
+		return true
+	}
+
+	if (con_tinue) {
+		return true;
+	}
+	return false;
+}
+
+function submit_edit_form() {
+	// Submits account changes via POST request
+	
+	// get account changes & error check
+	var account = getAccountInfo();
+	if (accountErrors(account)) {
+		return false;
+	}
+	if (continueIfChangePw(account) != true) {
+		return false;
+	}
+	
+	// POST request
+	var payload = account;
+	var req = new XMLHttpRequest();
+	var payload = account;
+	req.open('POST', get_post_url_account(), true);
+	req.setRequestHeader('Content-Type', 'application/json');
+	req.addEventListener('load',function(){
+		if(req.status >= 200 && req.status < 400){
+			console.log('success!');
+			window.location.reload();
+		} else {
+			console.log("Error in network request: " + req.statusText);
+			alert("error in network request.");
+		}
+	});
+	req.send(JSON.stringify(payload));
+}
+
+function getAccountInfo() {
+	// retrieve and return the edited account info from the edit form
+	
+	var account = {username:null, name:null, pw:null, email:null, playstyle:null, campaign_history:null};
+	account.name = cleanString(document.getElementById('account-name-input').value);
+	account.email = cleanString(document.getElementById('account-email-input').value);
+	account.pw = document.getElementById('account-password-input').value;
+	account.playstyle = document.getElementById('account-playstyle-input').options[document.getElementById('account-playstyle-input').value].text
+	account.campaign_history = cleanString(document.getElementById('account-campaignhistory-input').value);
+	return account;
 }
 
 function displayEditForm() {
@@ -39,17 +114,24 @@ function displayEditForm() {
 function hideEditForm() {
 	document.getElementById('modal-backdrop').classList.add('hidden');
 	document.getElementById('edit-account-modal').classList.add('hidden');
-	clearEditForm();
 }
 
 function initializeEditForm() {
-	/* Sets the values of each field on the edit form to the user's account info */
+	// Populate edit form with user's account info
+	
 	document.getElementById("account-username-p").innerHTML = document.getElementById("account-username").innerHTML;
 	document.getElementById("account-name-input").value = document.getElementById("account-name").innerHTML;
 	document.getElementById("account-email-input").value = document.getElementById("account-email").innerHTML;
 	document.getElementById("account-playertype-p").innerHTML = document.getElementById("account-playertype").innerHTML;
-	document.getElementById("account-playstyle-input").value = document.getElementById("account-playstyle").innerHTML;
 	document.getElementById("account-campaignhistory-input").value = document.getElementById("account-campaignhistory").innerHTML;
+	
+	users_playstyle = document.getElementById("account-playstyle").innerHTML;
+	account_playstyle_select = document.getElementById('account-playstyle-input')
+	for (var i=0; i<account_playstyle_select.length; i++) {
+		if (account_playstyle_select[i].innerHTML == users_playstyle) {
+			account_playstyle_select[i].selected = true;
+		}
+	}	
 }
 
 function clearEditForm() {
@@ -61,52 +143,31 @@ function clearEditForm() {
 
 window.addEventListener('DOMContentLoaded', function() {
 	
-	// Edit button click: Display Edit form
+	// display edit form
 	document.getElementById("account-edit").addEventListener("click", function () {
 		event.preventDefault();
-		/*flipFormReadonly(1);*/
-		
-		// show the edit modal
-		clearEditForm();
 		initializeEditForm();
 		displayEditForm();
 	});
 	
-	
+	// cancel edit form
 	document.getElementsByClassName("modal-cancel-button")[0].addEventListener("click", function () {
 		event.preventDefault();
 		clearEditForm();
 		hideEditForm();
 	});
 	
+	// submit edit form (update account info)
 	document.getElementsByClassName("modal-accept-button")[0].addEventListener("click", function() {
+		// submit account changes
 		event.preventDefault();
-		
-		account_info = {};		
-		account_info.name = document.getElementById("account-name-input").value;
-		account_info.email = document.getElementById("account-email-input").value;
-		account_info.password_ = document.getElementById("account-password-input").value;
-		account_info.playstyle = document.getElementById("account-playstyle-input").value;
-		account_info.campaign_history = document.getElementById("account-campaignhistory-input").value;
-		
-		console.log(document.getElementById("account-password-input"));
-		
-		if (account_info.password_ == "") {
-			// send to handler 1
-			delete account_info.password_
-			alert("password not updated. Collected values: \n\n" + JSON.stringify(account_info));
-		}
-		else {
-			// get pw and send to handler 2
-			alert("Password updated. Collected values: \n\n" + JSON.stringify(account_info));
-		}
-		
+		submit_edit_form();
 		clearEditForm();
 		hideEditForm();
 	});
 	
-	
-	// Save button click: Account field values pushed, fields become read-only
+	/*
+	// Submit button click: Account field values pushed, fields become read-only
 	document.getElementById("account-save").addEventListener("click", function () {
 		event.preventDefault();
 		// collect account info in JSON object
@@ -156,5 +217,6 @@ window.addEventListener('DOMContentLoaded', function() {
 			document.getElementById("account-edit").setAttribute("hidden", true);
 			document.getElementById("account-container").setAttribute("style", "border: solid yellow;");
 		}
-	};
+	}; 
+	*/
 });
