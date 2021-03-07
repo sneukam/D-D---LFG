@@ -4,80 +4,127 @@
 
 ***********************************************/
 
-function createCharacter() {
-	var characterName = document.getElementById('character-name-input').value;
-	var characterClass = document.getElementById('character-class-input').value;
-	var characterTraits = document.getElementById('character-traits-input').value;
-
-	if (characterName && characterClass && characterTraits) {
-		var newCharacter = {character_name: characterName, character_class: characterClass, character_traits: characterTraits}
-		alert("Sending new character to database via POST request:\n\n" + JSON.stringify(newCharacter));
-		// ** push fields to db via POST request.
-		// ...
-		clearCreateForm();
-		hideCreateForm();
-	} else {alert('You must specify all fields!');}
+function get_post_url_character() {
+	// returns the URL used for the POST request to create a new campaign
+	return 'http://flip3.engr.oregonstate.edu:6735/characters';
 }
 
-function displayCreateForm() {
+function submitCharacter() {
+	
+	character = getCharacterSubmission();
+	if (errorCheckCharacter(character) == false) {
+		return;
+	}
+	
+	console.log('sending character in POST request');
+	console.log(character);
+	
+	var req = new XMLHttpRequest();
+	var payload = character;
+	req.open('POST', get_post_url_character(), true);
+	req.setRequestHeader('Content-Type', 'application/json');
+	req.addEventListener('load',function(){
+		if(req.status >= 200 && req.status < 400){
+			console.log('success!');
+			window.location.reload();
+		} else {
+			console.log("Error in network request: " + req.statusText);
+			alert("error in network request.");
+		}
+	});
+	req.send(JSON.stringify(payload));
+	hideCharacterForm();
+}
+
+function getCharacterSubmission() {
+	// returns the character submission from the Character form (Create/Edit)
+	character = {action:null, id:null, name:null, class_:null, traits:null}
+	
+	character.action = document.getElementById('character-action').value;
+	character.id = document.getElementById('character-id-input').value;
+	character.name = cleanCharacterValue(document.getElementById('character-name-input').value);
+	character.class_ = cleanCharacterValue(document.getElementById('character-class-input').value);
+	character.traits = cleanCharacterValue(document.getElementById('character-traits-input').value);
+	return character;
+}
+
+function cleanCharacterValue(input_string) {
+	// cleans a string argument by removing all ' or " characters that are found within the string
+	return input_string.replace(/['"]+/g, '');
+}
+
+function errorCheckCharacter(character) {
+	// returns true if the character fields are OK, false if not
+	// if there is an error, this function will display the specific error message
+	
+	// empty fields
+	if (character.action == '' || character.name == '' || character.class_ == '' || character.traits == '') {
+		alert("character fields cannot be empty");
+		return false
+	}
+	
+	// field lengths
+	if (character.name.length > 60 || character.class_.length > 50 || character.traits.length > 255) {
+		alert("character info can only be a certain lenght: name(60), class(50), traits(255)");
+		return false
+	}
+	
+	return true
+}
+
+function displayCharacterForm(header, action, id, name, class_, traits) {
+	// display the character form with data
+	
+	document.getElementById('character-action').value = action;
+	document.getElementById('character-form-header').innerHTML = header;
 	document.getElementById('modal-backdrop').classList.remove('hidden');
 	document.getElementById('create-character-modal').classList.remove('hidden');
+	
+	document.getElementById("character-id-input").value = id;
+	document.getElementById("character-name-input").value = name;
+	document.getElementById("character-class-input").value = class_;
+	document.getElementById("character-traits-input").value = traits;
+	
+	if (action == 'delete') {
+		document.getElementById("character-name-input").readOnly = true;
+		document.getElementById("character-class-input").readOnly = true;
+		document.getElementById("character-traits-input").readOnly = true;
+		document.getElementById("character-name-input").style.backgroundColor = "#e5e5e5";
+		document.getElementById("character-class-input").style.backgroundColor = "#e5e5e5";
+		document.getElementById("character-traits-input").style.backgroundColor = "#e5e5e5";
+	}
 }
 
-function hideCreateForm() {
+function hideCharacterForm() {
+	clearCharacterForm()
 	document.getElementById('modal-backdrop').classList.add('hidden');
 	document.getElementById('create-character-modal').classList.add('hidden');
-	clearCreateForm();
 }
 
-function clearCreateForm() {
+function clearCharacterForm() {
 	var characterInputElems = document.getElementsByClassName('character-input-element');
 	for (var i = 0; i < characterInputElems.length; i++) {
 		var input = characterInputElems[i].querySelector('input, textarea');
 		input.value = '';
-	}
-}
-
-function editCharacter() {
-	var id = document.getElementById('edit-character-id-input').value;
-	var characterName = document.getElementById('edit-character-name-input').value;
-	var characterClass = document.getElementById('edit-character-class-input').value;
-	var characterTraits = document.getElementById('edit-character-traits-input').value;
-	var updatedCharacter = {character_id: id, character_name: characterName, character_class: characterClass, character_traits: characterTraits};
-
-	if (characterName && characterClass && characterTraits) {
-		alert("Pushing Character UPDATE to database via POST\n\n" + JSON.stringify(updatedCharacter));
-		// ** send data to DB via POST request
-		hideEditForm();
-	} else {alert('You must specify all fields!');}
-}
-
-function displayEditForm() {
-	document.getElementById('modal-backdrop').classList.remove('hidden');
-	document.getElementById('edit-character-modal').classList.remove('hidden');
-}
-
-function hideEditForm() {
-	document.getElementById('modal-backdrop').classList.add('hidden');
-	document.getElementById('edit-character-modal').classList.add('hidden');
-	clearEditForm();
-}
-
-function clearEditForm() {
-	var characterInputElems = document.getElementsByClassName('edit-characterinput-element');
-	for (var i = 0; i < characterInputElems.length; i++) {
-		var input = characterInputElems[i].querySelector('input, textarea');
-		input.value = '';
+		document.getElementById("character-name-input").readOnly = false;
+		document.getElementById("character-class-input").readOnly = false;
+		document.getElementById("character-traits-input").readOnly = false;
+		
+		document.getElementById("character-name-input").style.backgroundColor = "white";
+		document.getElementById("character-class-input").style.backgroundColor = "white";
+		document.getElementById("character-traits-input").style.backgroundColor = "white";
 	}
 }
 
 window.addEventListener('DOMContentLoaded', function () {
 
 	// 'Create Character' - Button Listeners
-	document.getElementById('create-character-button').addEventListener('click', displayCreateForm);
-	document.querySelector('#create-character-modal .modal-close-button').addEventListener('click', hideCreateForm);
-	document.querySelector('#create-character-modal .modal-cancel-button').addEventListener('click', hideCreateForm);
-	document.querySelector('#create-character-modal .modal-accept-button').addEventListener('click', createCharacter);
+	document.getElementById('create-character-button-two').addEventListener('click', function() {
+		displayCharacterForm('Create a Character', 'create', '', '', '', '');
+	});
+	document.querySelector('#create-character-modal .modal-close-button').addEventListener('click', hideCharacterForm);
+	document.querySelector('#create-character-modal .modal-cancel-button').addEventListener('click', hideCharacterForm);
+	document.querySelector('#create-character-modal .modal-accept-button').addEventListener('click', submitCharacter);
 
 	// 'Edit Character' - Button Listeners
 	var editCharacterButtons = document.getElementsByClassName('edit-character-button');
@@ -87,22 +134,11 @@ window.addEventListener('DOMContentLoaded', function () {
 		buttonvar.addEventListener('click', function() {
 			var id = buttonvar.parentElement.getElementsByClassName("character-id")[0].innerHTML;
 			var name = buttonvar.parentElement.getElementsByClassName("character-name")[0].innerHTML;
-			var class_name = buttonvar.parentElement.getElementsByClassName("character-class")[0].innerHTML;
+			var class_ = buttonvar.parentElement.getElementsByClassName("character-class")[0].innerHTML;
 			var traits = buttonvar.parentElement.getElementsByClassName("character-traits")[0].innerHTML;
-			
-			document.getElementById("edit-character-id-input").value = id;
-			document.getElementById("edit-character-name-input").value = name;
-			document.getElementById("edit-character-class-input").value = class_name;
-			document.getElementById("edit-character-traits-input").value = traits;
-
-			displayEditForm();
+			displayCharacterForm('Edit Character', 'update', id, name, class_, traits);
 		});
 	}
-	
-	// continued -> 'Edit Character' - Button Listeners
-	document.querySelector('#edit-character-modal .modal-close-button').addEventListener('click', hideEditForm);
-	document.querySelector('#edit-character-modal .modal-cancel-button').addEventListener('click', hideEditForm)
-	document.querySelector('#edit-character-modal .modal-accept-button').addEventListener('click', editCharacter)
 	
 	// 'Delete Character' - Button Listeners
 	var delCharacterButtons = document.getElementsByClassName('delete-character-button');
@@ -112,8 +148,9 @@ window.addEventListener('DOMContentLoaded', function () {
 		buttonvar.addEventListener('click', function() {
 			var id = buttonvar.parentElement.getElementsByClassName("character-id")[0].innerHTML;
 			var name = buttonvar.parentElement.getElementsByClassName("character-name")[0].innerHTML;
-			alert("The character id=" + id + " (" + name + ") will be deleted.\n\nFor now this is a static webpage and the character will remain.");
-			// ** Delete character via POST request to DB.
+			var class_ = buttonvar.parentElement.getElementsByClassName("character-class")[0].innerHTML;
+			var traits = buttonvar.parentElement.getElementsByClassName("character-traits")[0].innerHTML;
+			displayCharacterForm('Delete Character', 'delete', id, name, class_, traits);
 		});
 	}	
 });

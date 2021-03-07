@@ -11,84 +11,44 @@
   <body id="characters-body">
 	{% include 'navbar.html' %}
 	<div class="current_characters character_data" id="characters-full-div-below-nav-bar">
-		<p class="character-title">Current Characters</p>
-		<ul class="character">
-			<li class="character-id" hidden>5829</li>
-			<li class="character-name">Terra</li>
-			<li class="character-class">sorcerer/warlock</li>
-			<li class="character-traits">Groveborn</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
-		<ul class="character">
-			<li class="character-id" hidden>86204</li>
-			<li class="character-name">Alice</li>
-			<li class="character-class">rogue</li>
-			<li class="character-traits">half demon, half angel</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
-		<ul class="character">
-			<li class="character-id" hidden>6528</li>
-			<li class="character-name">Draug</li>
-			<li class="character-class">Ranger</li>
-			<li class="character-traits">Wood elf, edgey, worthless</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
-		<ul class="character">
-			<li class="character-id" hidden>728520</li>
-			<li class="character-name">Elril</li>
-			<li class="character-class">half-elf</li>
-			<li class="character-traits">Groveborn</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
-		<ul class="character">
-			<li class="character-id" hidden>5629</li>
-			<li class="character-name">Nayar</li>
-			<li class="character-class">Deva</li>
-			<li class="character-traits">Stylish, outspoken</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
-		<ul class="character">
-			<li class="character-id" hidden>58326</li>
-			<li class="character-name">Rhurr</li>
-			<li class="character-class">Aarakocra</li>
-			<li class="character-traits">Always scanning</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
-		<ul class="character">
-			<li class="character-id" hidden>65723</li>
-			<li class="character-name">Grengurn</li>
-			<li class="character-class">Dwarf</li>
-			<li class="character-traits">Very short</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
-		<ul class="character">
-			<li class="character-id" hidden>257926</li>
-			<li class="character-name">Benttooth</li>
-			<li class="character-class">Goblin</li>
-			<li class="character-traits">Steals things</li>
-			<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></i></button>
-			<button type="button" class="delete-character-button">Del</button>
-		</ul>
+		<h3 class="character-title">Current Characters</p>
 	</div>
-		<button type="button" id="create-character-button"><i class="fas fa-scroll"></i></i></button>
+	<div id="create-character-button-container-outer">
+		<div id="create-character-button-container">
+			<button type="button" id="create-character-button-two">Create Character</button>
+		</div>
+	</div>
+	<div id="character_data">
+		{% for character in characters %}
+			<ul class="character">
+				<li class="character-id" hidden>{{character.character_id}}</li>
+				<li class="character-name">{{character.character_name}}</li>
+				<li class="character-class">{{character.character_class}}</li>
+				<li class="character-traits">{{character.character_traits}}</li>
+				<button type="button" id="edit-character-button" class="edit-character-button"><i class="fas fa-cogs"></i></button>
+				<button type="button" class="delete-character-button">Del</button>
+			</ul>
+		{% endfor %}
+	</div>
+		<!--<button type="button" id="create-character-button"><i class="fas fa-scroll"></i></i></button>-->
 		<div id="modal-backdrop" class="hidden"></div>
 			<div id="create-character-modal" class="hidden">
 			  <div class="modal-dialog">
 				<div class="modal-header">
-				  <h3>Create a Character</h3>
+				  <h3 id='character-form-header'></h3>
 				  <button type="button" class="modal-close-button">&times;</button>
 				</div>
 				<div class="modal-body">
+					<div>
+						<input id="character-action" hidden></input>
+					</div>
 				  <div class="character-input-element">
-					<label for="character-name-input">Character Name</label>
-					<textarea id="character-name-input"></textarea>
+					<label for="character-id-input" hidden>Id</label>
+					<input id="character-id-input" hidden></input>
+				  </div>
+				  <div class="character-input-element">
+					<label for="character-name-input">Name</label>
+					<input id="character-name-input"></input>
 				  </div>
 				  <div class="character-input-element">
 					<label for="character-class-input">Class</label>
@@ -101,37 +61,8 @@
 				</div>
 				<div class="modal-footer">
 				  <button type="button" class="modal-cancel-button">Cancel</button>
-				  <button type="button" class="modal-accept-button">Create Character</button>
+				  <button type="button" class="modal-accept-button">Submit</button>
 				</div>
 			  </div>
 			</div>
-			<div id="edit-character-modal" class="hidden">
-			  <div class="modal-dialog">
-				<div class="modal-header">
-				  <h3>Edit this character</h3>
-				  <button type="button" class="modal-close-button">&times;</button>
-				</div>
-				<div class="modal-body"> edit-character-id-input
-				  <div class="edit-character-element" hidden>
-					<label for="edit-character-id-input" hidden>Character Name</label>
-					<textarea id="edit-character-id-input" hidden></textarea>
-				  </div>
-				  <div class="edit-character-element">
-					<label for="edit-character-name-input">Character Name</label>
-					<textarea id="edit-character-name-input"></textarea>
-				  </div>
-				  <div class="edit-character-element">
-					<label for="edit-character-class-input">Character Class</label>
-					<textarea id="edit-character-class-input"></textarea>
-				  </div>
-				  <div class="edit-character-element">
-					<label for="edit-character-traits-input">Character Traits</label>
-					<textarea id="edit-character-traits-input"></textarea>
-				  </div>
-				<div class="modal-footer">
-				  <button type="button" class="modal-cancel-button">Cancel</button>
-				  <button type="button" class="modal-accept-button">Submit</button>
-				</div>
-			 </div>
-		   </div>
   </body>
