@@ -22,11 +22,11 @@
 
 /* § Create */
 INSERT INTO characters(user_id, character_name, character_class, character_traits) 
-VALUES (12, 'Regdar', 'Human Fighter', 'Strong willed and capable');
+VALUES (1, 'Regdar', 'Human Fighter', 'Strong willed and capable');
 
 /* § Edit */
 UPDATE characters 
-SET character_class='Dwarf Fighter', character_traits='Short and capable'
+SET character_name='Draug', character_class='Dwarf Fighter', character_traits='Short and capable'
 WHERE char_id=6;
 
 /* § Delete */
@@ -34,7 +34,7 @@ DELETE FROM characters
 WHERE character_id=6;
 
 /* § View All owned by user */
-SELECT character_name, character_class, character_traits 
+SELECT character_id, character_name, character_class, character_traits 
 FROM characters 
 WHERE user_id=1;
 
@@ -49,10 +49,15 @@ WHERE user_id=1;
 /* Or closed campaigns, just change where clause *?
 /* Python requires: DATE_FORMAT(created, '%%b %%e %%Y') as created */
 SELECT campaign_id, campaign_name, num_players, desired_history, playstyle, 
-	IF(plays_on=1,'Mon',IF(plays_on=2,'Tues',IF(plays_on=3,'Wed',IF(plays_on=4,'Thur',IF(plays_on=5,'Fri',IF(plays_on=6,'Sat',IF(plays_on=7,'Sun',NULL))))))) as 'plays_on',
-	DATE_FORMAT(created,'%b %e %Y') as created, status, COUNT(campaign_id) as signed_up
+IF(plays_on=1,'Mon',IF(plays_on=2,'Tues',IF(plays_on=3,'Wed',IF(plays_on=4,'Thur',IF(plays_on=5,'Fri',IF(plays_on=6,'Sat',IF(plays_on=7,'Sun',NULL))))))) as 'plays_on',
+	DATE_FORMAT(created,'%b %e %Y') as created, DATE_FORMAT(closed,'%b %e %Y') as closed, status, IFNULL(the_count,0) as 'signed_up'
 FROM campaigns
 LEFT JOIN campaign_player_roster using (campaign_id)
+LEFT JOIN (
+    SELECT campaign_id, COUNT(campaign_id) as 'the_count'
+    FROM campaign_player_roster
+    GROUP BY campaign_id
+) as id_count using (campaign_id)
 WHERE dm=2
 AND status='Open'
 GROUP BY campaign_id
@@ -64,16 +69,17 @@ VALUES (2, 'A New Campaign', 5, 'Some experience', 'UA Allowed', 6, curdate(), '
 
 /* § Close a campaign */
 UPDATE campaigns 
-SET status='Closed'
+SET status='Closed', closed=CURDATE()
 WHERE campaign_id=7
 AND dm=2;
 
 /* View Roster for a Campaign */
-SELECT *
-FROM campaign_player_roster
+SELECT campaign_id, campaign_name, users.username, users.email, users.name, users.player_type, users.playstyle, users.campaign_history, characters.character_name, characters.character_class, characters.character_traits
+FROM campaign_player_roster as r
 LEFT JOIN users using (user_id)
-LEFT JOIN characters on campaign_player_roster.character_id = characters.character_id
-WHERE campaign_player_roster.campaign_id = 1
+LEFT JOIN characters on r.character_id = characters.character_id
+LEFT JOIN campaigns using (campaign_id)
+WHERE r.campaign_id = {campaign_id}
 AND player_type = 'Player'
 
 
