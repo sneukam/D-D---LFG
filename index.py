@@ -198,7 +198,46 @@ def new_user():
 def characters():
     if not logged_in():
         return redirect(location='/login', code=302)
-    return render_template("characters.html")
+
+    # serve page with data
+    db_connection = db.connect_to_database()
+    query = queries.get_characters_owned_by_user(session['user_id'])
+    result = db.execute_query(db_connection, query)
+    characters = result.fetchall()
+    return render_template("characters.html", characters=characters)
+
+@app.route('/characters', methods=['POST'])
+def CUD_characters():
+    """
+    Create, Update, and Delete Characters
+    Action determined by POST request
+    """
+
+    # get Action, connect to db
+    character = request.get_json()
+    print(character)
+    action = character['action']
+    db_connection = db.connect_to_database()
+
+    # get query depending on requested Action
+    if action == 'create':
+        query = queries.create_character(session['user_id'], \
+                                         character['name'], \
+                                         character['class_'], \
+                                         character['traits'])
+    elif action == 'update':
+        query = queries.update_character(character['id'], \
+                                         character['name'], \
+                                         character['class_'], \
+                                         character['traits'])
+    elif action == 'delete':
+        query = queries.delete_character(character['id'])
+    else:
+        return "error: incorrect action in POST request", 400
+
+    print("Executing character query:")
+    db.execute_query(db_connection, query)
+    return "1"
 
 @app.route('/create-campaign')
 def create_campaign():
@@ -246,6 +285,27 @@ def create_new_campaign():
 
     # JS will automatically reload the page on a success response
     return "1"
+
+@app.route('/get-campaign-roster', methods=['POST'])
+def get_campaign_roster():
+    """
+    Returns the Roster associated with the campaign-id specified in the POST request
+    """
+
+    # get campaign id
+    db_connection = db.connect_to_database()
+    campaign = request.get_json()
+    print("Received request to get_campaign_roster() POST")
+    print(f"Retrieving Roster for campaign id {campaign['id']}")
+    print(campaign['id'])
+    query = queries.get_campaign_roster(campaign['id'])
+    result = db.execute_query(db_connection, query)
+    real_result = result.fetchall()
+    print("Roster data we are trying to send back:")
+    print(json.jsonify(real_result))
+
+    # how do I return a JSON/Dict object?
+    return json.jsonify(real_result)
 
 @app.route('/close-campaign', methods=['POST'])
 def close_campaign():
