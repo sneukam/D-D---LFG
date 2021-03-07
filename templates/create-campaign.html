@@ -35,18 +35,19 @@
 					<td></td>
 				</tr>
 			<tbody class="available-campaigns-table-body">
+				{% for campaign in open_campaigns %}
 				<tr>
-					<td hidden>5802</td>
-					<td>Saviors of Ragnarok</td>
-					<td>Aggressive</td>
-					<td>Experienced players only</td>
-					<td>2/10/2021</td>
-					<td>Sunday</td>
-					<td>8</td>
-					<td>2</td>
+					<td class="campaign-id" hidden>{{campaign.campaign_id}}</td>
+					<td>{{campaign.campaign_name}}</td>
+					<td>{{campaign.playstyle}}</td>
+					<td>{{campaign.desired_history}}</td>
+					<td>{{campaign.created}}</td>
+					<td>{{campaign.plays_on}}</td>
+					<td>{{campaign.num_players}}</td>
+					<td>{{campaign.signed_up}}</td>
 					<td class="join-campaign-cell">
 						<span class="campaign-action-cells">
-							<button class="join-campaign-button">Roster</button>
+							<button class="campaign-roster-button">Roster</button>
 						</span></td>
 					<td class="join-campaign-cell">
 						<span class="campaign-action-cells">
@@ -54,6 +55,7 @@
 						</span></td>
 					<td class="joined-this-campaign" hidden>Y</td>
 				</tr>
+				{% endfor %}
 			</tbody>
 		</table>
 	</div>
@@ -69,57 +71,31 @@
 					<td>Name</td>
 					<td>Playstyle</td>
 					<td class="no-wrap">Desired History</td>
-					<td>Plays On</td>
-					<td class="no-wrap"># Players</td>
 					<td>Created</td>
-					<td>Closed</td>
+					<td class="no-wrap">Closed</td>
+					<td class="no-wrap">Plays on</td>
+					<td>Looking for</td>
+					<td>Signed up</td>
 				</tr>
 			<tbody class="available-campaigns-table-body">
-				<tr>
-					<td hidden>5802</td>
-					<td>The First Dungeon</td>
-					<td>Laid back</td>
-					<td>New players allowed</td>
-					<td>Sunday</td>
-					<td>6</td>
-					<td>2/10/2021</td>
-					<td>3/1/2021</td>
-					<td class="join-campaign-cell">
-						<span class="campaign-action-cells">
-							<button class="join-campaign-button">Roster</button>
-						</span></td>
-					<td class="joined-this-campaign" hidden>Y</td>
-				</tr>
-				<tr>
-					<td hidden>5802</td>
-					<td>Example 2</td>
-					<td>Laid back</td>
-					<td>New players allowed</td>
-					<td>Sunday</td>
-					<td>6</td>
-					<td>2/10/2021</td>
-					<td>3/1/2021</td>
-					<td class="join-campaign-cell">
-						<span class="campaign-action-cells">
-							<button class="join-campaign-button">Roster</button>
-						</span></td>
-					<td class="joined-this-campaign" hidden>Y</td>
-				</tr>
-				<tr>
-					<td hidden>5802</td>
-					<td>Example 3</td>
-					<td>Laid back</td>
-					<td>New players allowed</td>
-					<td>Sunday</td>
-					<td>6</td>
-					<td>2/10/2021</td>
-					<td>3/1/2021</td>
-					<td class="join-campaign-cell">
-						<span class="campaign-action-cells">
-							<button class="join-campaign-button">Roster</button>
-						</span></td>
-					<td class="joined-this-campaign" hidden>Y</td>
-				</tr>
+				{% for campaign in closed_campaigns %}
+					<tr>
+						<td class="campaign-id" hidden>{{campaign.campaign_id}}</td>
+						<td>{{campaign.campaign_name}}</td>
+						<td>{{campaign.playstyle}}</td>
+						<td>{{campaign.desired_history}}</td>
+						<td>{{campaign.created}}</td>
+						<td>{{campaign.closed}}</td>
+						<td>{{campaign.plays_on}}</td>
+						<td>{{campaign.num_players}}</td>
+						<td>{{campaign.signed_up}}</td>
+						<td class="join-campaign-cell">
+							<span class="campaign-action-cells">
+								<button class="campaign-roster-button">Roster</button>
+							</span></td>
+						<td class="joined-this-campaign" hidden>Y</td>
+					</tr>
+				{% endfor %}
 			</tbody>
 		</table>
 	</div>
@@ -129,80 +105,121 @@
 	<!-- I will though use this discliamer and change the font color to white -->
 	<div class="disclaimer-container">
 		<div class="disclaimer">
-			<p id="disclaimer-message">*When all player slots are filled the campaign's status will automatically become closed. You may then view the Roster and contact the players to start playing. Hitting the 'Close' button on a campaign that is still open will prematurely close it. In that case you may want to be courteous and reach out those who signed up and let them know.<p>
+			<p id="disclaimer-message">*When all player slots are filled the campaign's status will automatically become closed. You may then view the Roster and contact the players to start playing. Hitting the 'Close' button on a campaign that is still open will prematurely close it. In that case you may want to be courteous and reach out those who signed up and let them know.</p>
 		</div>
-	</div>
-	<!--<button type="button" id="create-campaign-button"><i class="fas fa-drafting-compass"></i></button>-->
-
-	<div id="modal-backdrop" class="hidden"></div>
-    <div id="create-campaign-modal" class="hidden">
-      <div class="modal-dialog">
-
-        <div class="modal-header">
-          <h3>Create a Campaign</h3>
-          <button type="button" class="modal-close-button">&times;</button>
-        </div>
-
-        <div class="modal-body">
-			<div class="campaign-input-element">
-				<label for="campaign-name-input">Campaign Name</label>
-				<input type="text" id="campaign-name-input">
-			</div>
-			<div class="campaign-input-element">
-				<label for="campaign-players-input">Number of players wanted</label>
-				<input type="text" id="character-players-input">
-			</div>
-			<div class="campaign-input-element">
-				<label for="campaign-desired-history">Select player preference</label>
-				
-				<select name="campaign-desired-history" id="campaign-desired-history">
-				<option value=1>All players welcome</option>
-				<option value=2>New players preffered</option>
-				<option value=3>Some experience</option>
-				<option value=4>Experienced players only</option>
-				</select>
-			</div>
-			<div class="campaign-input-element">
-				<label for="campaign-playstyle">Select Homebrew/UA preference</label>
-				
-				<select name="campaign-playstyle" id="campaign-playstyle">
-				<option value=1>By the Book</option>
-				<option value=2>UA allowed</option>
-				<option value=3>UA and Homebrew</option>
-				<option value=4>Contact DM</option>
-				</select>
-			</div>
-			<div class="campaign-input-element">
-				<label for="campaign-day">Select day to play</label>
-				<select name="campaign-day" id="campaign-day">
-					<option value=1>Monday</option>
-					<option value=2>Tuesday</option>
-					<option value=3>Wednesday</option>
-					<option value=4>Thursday</option>
-					<option value=5>Friday</option>
-					<option value=6>Saturday</option>
-					<option value=7>Sunday</option>
-				</select>
-			</div>
-			<div class="campaign-input-element">
-				<label for="campaign-num-players">Select # Players</label>
-				<select name="campaign-day" id="campaign-day">
-					<option value=1>1</option>
-					<option value=2>2</option>
-					<option value=3>3</option>
-					<option value=4>4</option>
-					<option value=5>5</option>
-					<option value=6>6</option>
-					<option value=7>7</option>
-					<option value=8>8</option>
-				</select>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="modal-cancel-button">Cancel</button>
-				<button type="button" class="modal-accept-button">Submit</button>
-			</div>
-		</div>
-	</div>
 	</div>
 	
+	<!-- Create Campaign modal -->
+	<div id="modal-backdrop" class="hidden">
+		<div id="create-campaign-modal" class="hidden">
+			<div class="create-modal-dialog">
+				<div class="modal-header">
+					<h3>Create Campaign</h3>
+					<button type="button" class="modal-close-button">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="campaign-input-element">
+						<label for="campaign-name-input">Name</label>
+						<input type="text" id="campaign-name-input">
+					</div>
+					<div class="campaign-input-element">
+						<label for="campaign-desired-history">Desired history</label>
+						<select name="campaign-desired-history" id="campaign-desired-history">
+							<option value=0>All players welcome</option>
+							<option value=1>New players preffered</option>
+							<option value=2>Some experience</option>
+							<option value=3>Experienced players only</option>
+						</select>
+					</div>
+					<div class="campaign-input-element">
+						<label for="campaign-playstyle">Playstyle</label>
+							<select name="campaign-playstyle" id="campaign-playstyle">
+							<option value=0>By the Book</option>
+							<option value=1>UA allowed</option>
+							<option value=2>UA and Homebrew</option>
+							<option value=3>Defer to DM</option>
+						</select>
+					</div>
+					<div class="campaign-input-element">
+						<label for="campaign-day">Plays on</label>
+						<select name="campaign-day" id="campaign-plays-on">
+							<option value=1>Monday</option>
+							<option value=2>Tuesday</option>
+							<option value=3>Wednesday</option>
+							<option value=4>Thursday</option>
+							<option value=5>Friday</option>
+							<option value=6>Saturday</option>
+							<option value=7>Sunday</option>
+						</select>
+					</div>
+					<div class="campaign-input-element">
+						<label for="campaign-num-players">Number of players</label>
+						<select name="campaign-day" id="campaign-num-players">
+							<option value=0>1</option>
+							<option value=1>2</option>
+							<option value=2>3</option>
+							<option value=3>4</option>
+							<option value=4>5</option>
+							<option value=5>6</option>
+							<option value=6>7</option>
+							<option value=7>8</option>
+						</select>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="modal-cancel-button">Cancel</button>
+						<button type="button" class="modal-accept-button">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 'loading' modal -->
+		<div id="create-campaign-modal" class="hidden">
+			<div class="modal-dialog">
+				<p>Loading...</p>
+			</div>
+		</div>
+	
+		<!-- here starts the roster modal -->
+		<div id="show-roster-modal" class="hidden">
+			<div class="roster-modal-dialog">
+				<div class="modal-header" id="">
+					<h3 id="roster-campaign-heading">h3</h3>
+					<button type="button" class="modal-close-button">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class="campaign-roster-table-div">
+						<!-- table goes here -->
+						<table class="campaign-roster-table">
+							<thead class="campaign-roster-table-header">
+								<tr id="campaign-roster-table-header-row">
+									<td>Name</td>
+									<td>Email</td>
+									<td>Playstyle</td>
+									<td>Campaign History</td>
+									<td class="no-wrap">Character</td>
+									<td>Class</td>
+									<td class="no-wrap">Traits</td>
+								</tr>
+							</thead>
+							<tbody id="available-campaigns-table-body">
+								<!--<tr>
+									<td>-name-</td>
+									<td>-email-</td>
+									<td>-playstyle-</td>
+									<td>-campaign-history-</td>
+									<td>-Character-</td>
+									<td>-Class-</td>
+									<td>-traits-</td>
+								</tr>-->
+							</tbody>
+						</table>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="modal-cancel-button">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
