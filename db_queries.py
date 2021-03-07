@@ -7,6 +7,14 @@ All functions return: string
 
 """
 -------------------------------------------
+        Login Page
+-------------------------------------------
+"""
+
+
+
+"""
+-------------------------------------------
         Sign Up Page
 -------------------------------------------
 """
@@ -281,11 +289,19 @@ def get_campaigns_by_dm(user_id, status):
                     IF(plays_on=5,'Fri',\
                     IF(plays_on=6,'Sat',\
                     IF(plays_on=7,'Sun',NULL))))))) as 'plays_on', \
-                DATE_FORMAT(created,'%%b %%e %%Y') as created, status, COUNT(campaign_id) as signed_up \
+                DATE_FORMAT(created,'%%b %%e %%Y') as created, \
+                DATE_FORMAT(closed,'%%b %%e %%Y') as closed, \
+                status, \
+                IFNULL(the_count,0) as 'signed_up' \
             FROM campaigns \
             LEFT JOIN campaign_player_roster using (campaign_id) \
+            LEFT JOIN ( \
+                SELECT campaign_id, COUNT(campaign_id) as 'the_count' \
+                FROM campaign_player_roster \
+                GROUP BY campaign_id \
+            ) as id_count using(campaign_id) \
             WHERE dm={user_id} \
-                AND status='{status}' \
+            AND status='{status}' \
             GROUP BY campaign_id \
             ORDER BY created ASC;"
 
@@ -297,11 +313,75 @@ def create_campaign(user_id, campaign_name, num_players, desired_history, playst
     return f"INSERT INTO \
                 campaigns(dm, campaign_name, num_players, desired_history, playstyle, plays_on, created, status) \
             VALUES ({user_id}, '{campaign_name}', {num_players}, '{desired_history}', \
-                    '{playstyle}', {plays_on}, curdate(), 'Open');"
+                    '{playstyle}', {plays_on}, CURDATE(), 'Open');"
 
 def update_close_campaign(user_id, campaign_id):
     """
-    Closes campaign <campaign_id>
+    Close a campaign
     """
 
-    return f"UPDATE campaigns SET status='Closed' WHERE campaign_id={campaign_id} AND dm={user_id};"
+    return f"UPDATE campaigns SET status='Closed', closed=CURDATE() WHERE campaign_id={campaign_id} AND dm={user_id};"
+
+def get_campaign_roster(campaign_id):
+    """
+    Returns the Roster for the given campaign
+    """
+
+    return f"   SELECT \
+                    campaign_id, \
+                    campaign_name, \
+                    users.username, \
+                    users.email, \
+                    users.name, \
+                    users.player_type, \
+                    users.playstyle, \
+                    users.campaign_history, \
+                    characters.character_name, \
+                    characters.character_class, \
+                    characters.character_traits \
+                FROM campaign_player_roster \
+                LEFT JOIN users using (user_id) \
+                LEFT JOIN characters on campaign_player_roster.character_id = characters.character_id \
+                LEFT JOIN campaigns using (campaign_id) \
+                WHERE campaign_player_roster.campaign_id = {campaign_id} \
+                AND player_type = 'Player';"
+
+
+"""
+-------------------------------------------
+        Characters Page
+-------------------------------------------
+"""
+
+def create_character(user_id, name, chrctr_class, traits):
+    """
+    Create a new Character
+    """
+
+    return f"   INSERT INTO characters(user_id, character_name, character_class, character_traits) \
+                VALUES ({user_id}, '{name}', '{chrctr_class}', '{traits}');"
+
+def update_character(character_id, name, chrctr_class, traits):
+    """
+    Update a Character
+    """
+
+    return f"   UPDATE characters \
+                SET character_name='{name}', character_class='{chrctr_class}', character_traits='{traits}' \
+                WHERE character_id={character_id};"
+
+def delete_character(character_id):
+    """
+    Delete a Character
+    """
+
+    return f"DELETE FROM characters WHERE character_id={character_id};"
+
+def get_characters_owned_by_user(user_id):
+    """
+    Returns a list of characters owned by the user
+    """
+
+    return f"   SELECT character_id, character_name, character_class, character_traits \
+                FROM characters \
+                WHERE user_id={user_id};"
