@@ -143,11 +143,7 @@ function close_campaign(campaign_id) {
 
 function roster(campaign_id) {
 	// parent function for buttton handler: Get and display the roster for a given campaign
-	
-	// populate data on form
 	populate_roster(campaign_id);
-	
-	// display roster form
 	display_roster_form();
 }
 
