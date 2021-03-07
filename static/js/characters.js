@@ -10,6 +10,7 @@ function get_post_url_character() {
 }
 
 function submitCharacter() {
+	// submits character via POST request. Handles Create/Update/Delete of character
 	
 	character = getCharacterSubmission();
 	if (errorCheckCharacter(character) == false) {
