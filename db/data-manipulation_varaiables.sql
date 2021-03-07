@@ -280,21 +280,25 @@ where campaign_player_id in (
 ****************************************/
 
 /* § View account information for a specific user */
-SELECT *
+SELECT username, name, email, player_type, playstyle, campaign_history
 FROM users
-WHERE user_id = :userIdInput;
+WHERE user_id ={user_id};
 
 /* § Create account */
 INSERT INTO users(username, password, email, name, player_type, playstyle, campaign_history)
 VALUES (:usernameInput, :passwordInput, :emailInput, :nameInput, :player_typeInput, :playstyleInput, :campaign_historyInput);
 
-/* § Update */
+/* § Update account info (minus pw) */
 UPDATE users
-SET username=:usernameInput,
-	password=:passwordInput, 
-	email=:emailInput, 
-	name=:nameInput, 
-	playstyle=:playstyleInput, 
-	campaign_history=:campaign_historyInput
+SET username={username},
+	email={email}, 
+	name={name}, 
+	playstyle={playstyle}, 
+	campaign_history={campaign_history}
 WHERE
-	user_id = :useridInput;
+	user_id ={user_id};
+	
+/* § Update account pw */
+UPDATE users
+SET password={pw},
+WHERE user_id={user_id};

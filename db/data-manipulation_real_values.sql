@@ -336,7 +336,7 @@ where campaign_player_id in (
 ****************************************/
 
 /* § View account information for a specific user */
-SELECT *
+SELECT username, name, email, player_type, playstyle, campaign_history
 FROM users
 WHERE user_id = 5;
 
