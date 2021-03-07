@@ -385,3 +385,39 @@ def get_characters_owned_by_user(user_id):
     return f"   SELECT character_id, character_name, character_class, character_traits \
                 FROM characters \
                 WHERE user_id={user_id};"
+
+
+"""
+-------------------------------------------
+        Account Page
+-------------------------------------------
+"""
+
+def update_account(user_id, name, email, playstyle, campaign_history):
+    """
+    Update a user's account info, minus their password
+    """
+
+    return f"   UPDATE users \
+                SET name='{name}', \
+                    email='{email}', \
+                    playstyle='{playstyle}', \
+                    campaign_history='{campaign_history}' \
+                WHERE \
+                    user_id ={user_id};"
+
+def update_account_pw(user_id, pw):
+    """
+    Update a user's password
+    """
+
+    return f"UPDATE users SET password='{pw}' WHERE user_id={user_id};"
+
+def view_account(user_id):
+    """
+    View a user's account
+    """
+
+    return f"   SELECT username, name, email, player_type, playstyle, campaign_history \
+                FROM users \
+                WHERE user_id = {user_id};"

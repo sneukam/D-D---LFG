@@ -421,7 +421,38 @@ def account():
     if not logged_in():
         return redirect(location='/login', code=302)
 
-    return render_template("account.html")
+    db_connection = db.connect_to_database()
+    query = queries.view_account(session['user_id'])
+    result = db.execute_query(db_connection, query)
+
+    return render_template("account.html", account=result.fetchall())
+
+@app.route('/account', methods=['POST'])
+def account_update():
+    """
+    Update a user's account info
+    """
+    if not logged_in():
+        return redirect(location='/login', code=302)
+
+    # update account info
+    account = request.get_json()
+    db_connection = db.connect_to_database()
+    print(account)
+    query = queries.update_account(session['user_id'], \
+                                   account['name'], \
+                                   account['email'], \
+                                   account['playstyle'], \
+                                   account['campaign_history'])
+    db.execute_query(db_connection, query)
+
+    # if applicable, update password
+    if account['pw'] != '':
+        query = queries.update_account_pw(session['user_id'], account['pw'])
+        db.execute_query(db_connection, query)
+        logout_user()
+
+    return "1"
 
 @app.route('/logout')
 def logout():
